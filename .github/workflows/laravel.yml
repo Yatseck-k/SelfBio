@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v4
     - uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
-    - uses: actions/checkout@v4
+        php-version: '8.2'   # или 8.3, как требуется проектом
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
@@ -28,8 +28,14 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
-    - name: Run Tests
+    - name: Run Laravel tests
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: php artisan test
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    - name: Install NPM dependencies
+      run: npm ci
