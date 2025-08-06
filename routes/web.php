@@ -18,4 +18,3 @@ Route::get('/blog', function () {
 Route::get('/blog/{slug}', function ($slug) {
     return Inertia::render('BlogPostPage', ['slug' => $slug]);
 });
-
