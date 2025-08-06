@@ -11,6 +11,8 @@ use MoonShine\Contracts\Core\DependencyInjection\ConfiguratorContract;
 use MoonShine\Contracts\Core\DependencyInjection\CoreContract;
 use MoonShine\Laravel\DependencyInjection\MoonShine;
 use MoonShine\Laravel\DependencyInjection\MoonShineConfigurator;
+use App\MoonShine\Resources\ContactInfoResource;
+use App\MoonShine\Resources\BlogPostResource;
 
 class MoonShineServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,8 @@ class MoonShineServiceProvider extends ServiceProvider
             ->resources([
                 MoonShineUserResource::class,
                 MoonShineUserRoleResource::class,
+                ContactInfoResource::class,
+                BlogPostResource::class,
             ])
             ->pages([
                 ...$config->getPages(),

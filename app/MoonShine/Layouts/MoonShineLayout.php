@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Layouts;
 
+use App\MoonShine\Resources\BlogPostResource;
+use App\MoonShine\Resources\ContactInfoResource;
 use MoonShine\ColorManager\ColorManager;
 use MoonShine\Contracts\ColorManager\ColorManagerContract;
 use MoonShine\Laravel\Layouts\AppLayout;
+use MoonShine\MenuManager\MenuGroup;
+use MoonShine\MenuManager\MenuItem;
 use MoonShine\UI\Components\Layout\Layout;
 
 final class MoonShineLayout extends AppLayout
@@ -22,6 +26,18 @@ final class MoonShineLayout extends AppLayout
     {
         return [
             ...parent::menu(),
+            MenuGroup::make(static fn () => __('moonshine::ui.custom.settings'), [
+                MenuItem::make(
+                    static fn () => __('moonshine::ui.custom.contact_info'),
+                    ContactInfoResource::class
+                )->icon('identification'),
+            ]),
+            MenuGroup::make(static fn () => __('moonshine::ui.custom.blog'), [
+                MenuItem::make(
+                    static fn () => __('moonshine::ui.custom.write_blog'),
+                    BlogPostResource::class
+                )->icon('pencil-square'),
+            ]),
         ];
     }
 
