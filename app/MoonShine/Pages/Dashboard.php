@@ -8,7 +8,6 @@ use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\Laravel\Pages\Page;
 
 #[\MoonShine\MenuManager\Attributes\SkipMenu]
-
 class Dashboard extends Page
 {
     /**
