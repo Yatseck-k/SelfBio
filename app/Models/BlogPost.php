@@ -15,9 +15,8 @@ class BlogPost extends Model
         'published_at',
     ];
 
-    protected array $dates = [
-        'published_at',
-        'created_at',
-        'updated_at',
-    ];
+    protected function casts(): array
+    {
+        return ['published_at' => 'datetime', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    }
 }
