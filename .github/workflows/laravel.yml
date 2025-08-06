@@ -15,7 +15,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'   # или 8.3, как требуется проектом
+        php-version: '8.4'
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
