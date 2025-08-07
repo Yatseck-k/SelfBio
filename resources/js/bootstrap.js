@@ -20,6 +20,8 @@ if (authToken) {
 
 window.Pusher = Pusher;
 
+// Отключаем Echo, поскольку broadcasting отключен
+/*
 window.Echo = new Echo({
     broadcaster: 'pusher',
     key: import.meta.env.VITE_PUSHER_APP_KEY || 'localkey',
@@ -34,6 +36,7 @@ window.Echo = new Echo({
         },
     },
 });
+*/
 
 // Global error handler for axios
 window.axios.interceptors.response.use(
