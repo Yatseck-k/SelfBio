@@ -12,19 +12,6 @@ if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 }
 
-// Также установить для Inertia.js
-import { router } from '@inertiajs/vue3';
-
-// Настройка глобальных заголовков для Inertia
-if (token) {
-    router.on('before', (event) => {
-        event.detail.visit.headers = {
-            ...event.detail.visit.headers,
-            'X-CSRF-TOKEN': token.content,
-        };
-    });
-}
-
 // Add auth token if available
 const authToken = localStorage.getItem('auth_token');
 if (authToken) {
