@@ -13,7 +13,7 @@ class DashboardTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
+        
         $this->user = User::factory()->create();
     }
 
@@ -49,7 +49,7 @@ class DashboardTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'city', 'temperature', 'description', 'humidity',
+                'city', 'temperature', 'description', 'humidity'
             ]);
     }
 

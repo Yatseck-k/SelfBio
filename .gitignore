@@ -5,6 +5,8 @@ npm-debug.log
 yarn-error.log
 
 .env
+!.env.example
+.env.*
 .phpunit.result.cache
 .phpactor.json
 auth.json

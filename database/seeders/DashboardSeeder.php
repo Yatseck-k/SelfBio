@@ -13,10 +13,10 @@ class DashboardSeeder extends Seeder
     {
         // Create test user if not exists
         $user = User::firstOrCreate(
-            ['email' => 'hello@yats.com'],
+            ['email' => 'test@test.com'],
             [
                 'name' => 'Test User',
-                'password' => bcrypt('TheBigPassword'),
+                'password' => bcrypt('password'),
             ]
         );
 

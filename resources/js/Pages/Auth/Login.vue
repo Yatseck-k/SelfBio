@@ -2,8 +2,8 @@
 import { Head, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
-  email: 'hello@yats.com',
-  password: 'TheBigPassword',
+  email: 'test@test.com',
+  password: 'password',
   remember: false,
 });
 
@@ -16,7 +16,7 @@ const submit = () => {
 
 <template>
   <Head title="Вход в систему" />
-
+  
   <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
     <div class="max-w-md w-full mx-auto">
       <div class="bg-white rounded-2xl shadow-xl p-8">
@@ -89,8 +89,8 @@ const submit = () => {
         <div class="mt-6 p-4 bg-blue-50 rounded-lg">
           <h3 class="text-sm font-medium text-blue-900 mb-2">Тестовые данные:</h3>
           <p class="text-sm text-blue-800">
-            <strong>Email:</strong> hello@yats.com<br>
-            <strong>Пароль:</strong> TheBigPassword
+            <strong>Email:</strong> test@test.com<br>
+            <strong>Пароль:</strong> password
           </p>
         </div>
 

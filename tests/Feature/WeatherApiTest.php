@@ -14,7 +14,7 @@ class WeatherApiTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
+        
         $this->user = User::factory()->create();
     }
 
@@ -27,7 +27,7 @@ class WeatherApiTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'city', 'temperature', 'description', 'humidity', 'is_mock',
+                'city', 'temperature', 'description', 'humidity', 'is_mock'
             ])
             ->assertJson(['is_mock' => true]);
     }
@@ -52,7 +52,7 @@ class WeatherApiTest extends TestCase
                 ]],
                 'wind' => ['speed' => 3.2],
                 'visibility' => 10000,
-            ], 200),
+            ], 200)
         ]);
 
         $response = $this->actingAs($this->user)
@@ -71,8 +71,8 @@ class WeatherApiTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'forecast' => [
-                    '*' => ['time', 'temperature', 'description', 'icon'],
-                ],
+                    '*' => ['time', 'temperature', 'description', 'icon']
+                ]
             ]);
     }
 }
