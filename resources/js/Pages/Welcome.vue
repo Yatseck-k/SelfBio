@@ -8,6 +8,10 @@ function goToContacts() {
 function goToBlog() {
     router.visit('/blog');
 }
+
+function goToDashboard() {
+    router.visit('/login');
+}
 </script>
 
 <template>
@@ -48,6 +52,12 @@ function goToBlog() {
                     class="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-pink-600/20 hover:from-indigo-600/30 hover:to-pink-600/30 text-white font-bold py-3 px-7 rounded-lg border border-white/10 shadow-lg transition"
                 >
                     Мой блог
+                </button>
+                <button
+                    @click="goToDashboard"
+                    class="bg-gradient-to-r from-blue-600/80 to-blue-700/80 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-7 rounded-lg border border-blue-500/30 shadow-lg transition"
+                >
+                    🍅 Дашборд
                 </button>
             </div>
         </div>

@@ -44,7 +44,7 @@ build:
 
 # Миграции и сиды
 migrate:
-	vendor/bin/sail artisan migrate --seed --force
+	vendor/bin/sail artisan migrate
 
 seed:
 	vendor/bin/sail artisan db:seed
