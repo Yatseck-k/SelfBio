@@ -124,8 +124,8 @@ class LaravelAPITester:
             self.get_csrf_token()
         
         login_data = {
-            'email': 'test@test.com',
-            'password': 'password',
+            'email': 'hello@yats.com',
+            'password': 'TheBigPassword',
             'remember': False
         }
         
