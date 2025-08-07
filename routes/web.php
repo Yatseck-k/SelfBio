@@ -3,18 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-});
+Route::get('/', fn () => Inertia::render('Welcome'));
 
-Route::get('/contacts', function () {
-    return Inertia::render('ContactPage');
-});
+Route::get('/contacts', fn () => Inertia::render('ContactPage'));
 
-Route::get('/blog', function () {
-    return Inertia::render('BlogPage');
-});
+Route::get('/blog', fn () => Inertia::render('BlogPage'));
 
-Route::get('/blog/{slug}', function ($slug) {
-    return Inertia::render('BlogPostPage', ['slug' => $slug]);
-});
+Route::get('/blog/{slug}', fn ($slug) => Inertia::render('BlogPostPage', ['slug' => $slug]));

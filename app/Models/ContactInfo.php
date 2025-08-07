@@ -12,7 +12,10 @@ class ContactInfo extends Model
         'name', 'phone', 'email', 'telegram', 'github', 'socials',
     ];
 
-    protected $casts = [
-        'socials' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'socials' => 'array',
+        ];
+    }
 }

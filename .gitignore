@@ -39,3 +39,4 @@ app/storage/
 yarn.lock
 phpunit.xml
 phpunit.xml.dist
+/public/vendor/
