@@ -10,7 +10,7 @@ function goToBlog() {
 }
 
 function goToDashboard() {
-    router.visit('/login');
+    router.visit('/enter');
 }
 </script>
 
@@ -72,4 +72,3 @@ function goToDashboard() {
     position: relative;
 }
 </style>
-
