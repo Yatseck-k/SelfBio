@@ -10,7 +10,7 @@ function goToBlog() {
 }
 
 function goToDashboard() {
-    router.visit('/enter');
+    router.visit('/home');
 }
 </script>
 
