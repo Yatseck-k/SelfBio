@@ -40,23 +40,37 @@ onMounted(() => {
     document.documentElement.classList.add('dark');
   }
 
-  // Setup WebSocket listeners
-  if (window.Echo) {
-    window.Echo.private(`user.${window.auth?.user?.id}`)
-      .listen('.task.created', (e) => {
+  // Setup WebSocket listeners with proper authentication
+  setupWebSocketListeners();
+  
+  // Request notification permission
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+});
+
+const setupWebSocketListeners = () => {
+  if (window.Echo && window.Laravel?.user?.id) {
+    const userId = window.Laravel.user.id;
+    
+    window.Echo.private(`user.${userId}`)
+      .listen('TaskCreated', (e) => {
         console.log('New task created:', e.task);
+        showNotification(`Новая задача: ${e.task.title}`);
       })
-      .listen('.pomodoro.completed', (e) => {
+      .listen('PomodoroCompleted', (e) => {
         console.log('Pomodoro completed:', e.session);
+        const sessionType = e.session.type === 'work' ? 'Рабочая сессия' : 'Перерыв';
+        showNotification(`${sessionType} завершена!`);
       })
-      .listen('.calendar.event.reminder', (e) => {
+      .listen('CalendarEventReminder', (e) => {
         showNotification(e.message);
       })
-      .listen('.dashboard.stats.updated', (e) => {
+      .listen('DashboardStatsUpdated', (e) => {
         console.log('Stats updated:', e.stats);
       });
   }
-});
+};
 
 const showNotification = (message) => {
   if ('Notification' in window && Notification.permission === 'granted') {
