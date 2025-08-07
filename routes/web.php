@@ -12,13 +12,13 @@ Route::get('/blog', fn () => Inertia::render('BlogPage'));
 
 Route::get('/blog/{slug}', fn ($slug) => Inertia::render('BlogPostPage', ['slug' => $slug]));
 
-// Authentication routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+// User Authentication routes - moved to avoid conflict with MoonShine
+Route::get('/enter', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/enter', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
-// Dashboard route (require authentication)
+// User Dashboard route - moved to avoid conflict with MoonShine  
 Route::middleware(['auth'])->group(function (): void {
-    Route::get('/dashboard', fn () => Inertia::render('Dashboard/Index'))
+    Route::get('/home', fn () => Inertia::render('Dashboard/Index'))
         ->name('dashboard');
 });
