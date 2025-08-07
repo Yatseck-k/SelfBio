@@ -27,7 +27,7 @@ class AuthController extends Controller
             // Create API token for dashboard
             $token = $request->user()->createToken('dashboard')->plainTextToken;
 
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/home');
         }
 
         throw ValidationException::withMessages([
