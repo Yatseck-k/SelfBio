@@ -9,7 +9,5 @@ Route::middleware('auth:sanctum')->get('/user', fn (Request $request) => $reques
 
 Route::get('/contacts', [ContactController::class, 'show']);
 
-Route::get('/blog', [BlogController::class, 'index']);
-Route::get('/blog/{slug}', [BlogController::class, 'show']);
-
 Route::middleware('throttle:60,1')->get('/blog', [BlogController::class, 'index']);
+Route::get('/blog/{slug}', [BlogController::class, 'show']);
