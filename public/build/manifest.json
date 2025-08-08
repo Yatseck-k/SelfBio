@@ -1,32 +1,82 @@
 {
+  "__plugin-vue_export-helper-DlAUqK2U.js": {
+    "file": "assets/_plugin-vue_export-helper-DlAUqK2U.js",
+    "name": "_plugin-vue_export-helper"
+  },
   "resources/css/app.css": {
-    "file": "assets/app-CQOriyuI.css",
+    "file": "assets/app-D3Z68L4j.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
+  "resources/js/Pages/BlogPage.vue": {
+    "file": "assets/BlogPage-DaHF89Or.js",
+    "name": "BlogPage",
+    "src": "resources/js/Pages/BlogPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
+    ],
+    "css": [
+      "assets/BlogPage-CxXfRtWR.css",
+      "assets/app-D3Z68L4j.css"
+    ]
+  },
+  "resources/js/Pages/BlogPostPage.vue": {
+    "file": "assets/BlogPostPage-BEPWKtp6.js",
+    "name": "BlogPostPage",
+    "src": "resources/js/Pages/BlogPostPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "__plugin-vue_export-helper-DlAUqK2U.js",
+      "resources/js/app.js"
+    ],
+    "css": [
+      "assets/BlogPostPage-xn3W-1yt.css",
+      "assets/app-D3Z68L4j.css"
+    ]
+  },
+  "resources/js/Pages/ContactPage.vue": {
+    "file": "assets/ContactPage-D2MntkNf.js",
+    "name": "ContactPage",
+    "src": "resources/js/Pages/ContactPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "__plugin-vue_export-helper-DlAUqK2U.js",
+      "resources/js/app.js"
+    ],
+    "css": [
+      "assets/ContactPage-DTxSp0z1.css",
+      "assets/app-D3Z68L4j.css"
+    ]
+  },
   "resources/js/Pages/Welcome.vue": {
-    "file": "assets/Welcome-CmpkamX9.js",
+    "file": "assets/Welcome-BlIyG0hK.js",
     "name": "Welcome",
     "src": "resources/js/Pages/Welcome.vue",
     "isDynamicEntry": true,
     "imports": [
-      "resources/js/app.js"
+      "resources/js/app.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js"
     ],
     "css": [
-      "assets/Welcome-QQZYVA_u.css",
-      "assets/app-CQOriyuI.css"
+      "assets/Welcome-o4g-D_vO.css",
+      "assets/app-D3Z68L4j.css"
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-BGCY7u71.js",
+    "file": "assets/app-_UgpILGJ.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "dynamicImports": [
+      "resources/js/Pages/BlogPage.vue",
+      "resources/js/Pages/BlogPostPage.vue",
+      "resources/js/Pages/ContactPage.vue",
       "resources/js/Pages/Welcome.vue"
     ],
     "css": [
-      "assets/app-CQOriyuI.css"
+      "assets/app-D3Z68L4j.css"
     ]
   }
 }
