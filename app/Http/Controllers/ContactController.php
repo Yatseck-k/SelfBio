@@ -7,11 +7,8 @@ use Illuminate\Http\JsonResponse;
 
 class ContactController extends Controller
 {
-    private ContactInfoService $contactInfoService;
-
-    public function __construct(ContactInfoService $contactInfoService)
+    public function __construct(private readonly ContactInfoService $contactInfoService)
     {
-        $this->contactInfoService = $contactInfoService;
     }
 
     public function show(): JsonResponse

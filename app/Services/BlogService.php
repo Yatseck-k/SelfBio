@@ -9,14 +9,8 @@ use Illuminate\Support\Facades\Cache;
 
 class BlogService
 {
-    private CacheService $cacheService;
-
-    private BlogPost $blogPost;
-
-    public function __construct(CacheService $cacheService, BlogPost $blogPost)
+    public function __construct(private readonly CacheService $cacheService, private readonly BlogPost $blogPost)
     {
-        $this->cacheService = $cacheService;
-        $this->blogPost = $blogPost;
     }
 
     public function getPosts(Request $request): LengthAwarePaginator

@@ -8,11 +8,8 @@ use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    private BlogService $blogService;
-
-    public function __construct(BlogService $blogService)
+    public function __construct(private readonly BlogService $blogService)
     {
-        $this->blogService = $blogService;
     }
 
     public function index(Request $request): JsonResponse
