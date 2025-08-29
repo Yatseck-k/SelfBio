@@ -9,7 +9,7 @@ class ContactController extends Controller
     public function show()
     {
         $contact = ContactInfo::first();
-        if (! $contact) {
+        if (!$contact) {
             return response()->json(['message' => 'Not found'], 404);
         }
 
