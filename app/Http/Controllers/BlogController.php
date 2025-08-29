@@ -2,38 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BlogPost;
+use App\Services\BlogService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class BlogController extends Controller
 {
-    public function index(Request $request)
+    public function __construct(private readonly BlogService $blogService)
     {
-        $page = $request->get('page', 1);
-        $cacheKey = "blog.index.page.{$page}";
-
-        $posts = Cache::remember($cacheKey, 60, fn () => BlogPost::whereNotNull('published_at')
-            ->where('published_at', '<=', now())
-            ->orderByDesc('published_at')
-            ->paginate(10));
-
-        return response()->json($posts);
     }
 
-    public function show($slug)
+    public function index(Request $request): JsonResponse
     {
-        $cacheKey = "blog.show.{$slug}";
+        return response()->json($this->blogService->getPosts($request));
+    }
 
-        $post = Cache::remember($cacheKey, 60, fn () => BlogPost::where('slug', $slug)
-            ->whereNotNull('published_at')
-            ->where('published_at', '<=', now())
-            ->first());
+    public function show(Request $request): JsonResponse
+    {
+        $response = $this->blogService->getPost($request);
 
-        if (! $post) {
-            return response()->json(['message' => 'Not found'], 404);
-        }
-
-        return response()->json($post);
+        return $response ? response()->json($response) : response()->json(['message' => 'Not found'], 404);
     }
 }

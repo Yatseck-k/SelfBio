@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ContactInfo;
+use App\Services\ContactInfoService;
+use Illuminate\Http\JsonResponse;
 
 class ContactController extends Controller
 {
-    public function show()
+    public function __construct(private readonly ContactInfoService $contactInfoService)
     {
-        $contact = ContactInfo::first();
-        if (! $contact) {
-            return response()->json(['message' => 'Not found'], 404);
-        }
+    }
 
-        return response()->json($contact);
+    public function show(): JsonResponse
+    {
+        $contact = $this->contactInfoService->getContactInfo();
+
+        return $contact ? response()->json($contact) : response()->json(['message' => 'Not found'], 404);
     }
 }
