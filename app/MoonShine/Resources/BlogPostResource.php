@@ -19,7 +19,6 @@ use MoonShine\UI\Fields\Textarea;
 class BlogPostResource extends ModelResource
 {
     protected string $model = BlogPost::class;
-
     protected string $column = 'title';
 
     public function getTitle(): string

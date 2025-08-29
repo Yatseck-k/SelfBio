@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ContactInfo extends Model {
+class ContactInfo extends Model
+{
     protected $table = 'contact_info';
 
     protected $fillable = [
@@ -16,11 +17,13 @@ class ContactInfo extends Model {
         'socials',
     ];
 
-    public function getContactInfo(): ?ContactInfo {
+    public function getContactInfo(): ?ContactInfo
+    {
         return self::first();
     }
 
-    protected function casts(): array {
+    protected function casts(): array
+    {
         return [
             'socials' => 'array',
         ];
