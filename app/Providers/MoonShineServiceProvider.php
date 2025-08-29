@@ -8,6 +8,7 @@ use App\MoonShine\Resources\BlogPostResource;
 use App\MoonShine\Resources\ContactInfoResource;
 use App\MoonShine\Resources\MoonShineUserResource;
 use App\MoonShine\Resources\MoonShineUserRoleResource;
+use App\MoonShine\Resources\WelcomeResource;
 use Illuminate\Support\ServiceProvider;
 use MoonShine\Contracts\Core\DependencyInjection\ConfiguratorContract;
 use MoonShine\Contracts\Core\DependencyInjection\CoreContract;
@@ -28,6 +29,7 @@ class MoonShineServiceProvider extends ServiceProvider
                 MoonShineUserRoleResource::class,
                 ContactInfoResource::class,
                 BlogPostResource::class,
+                WelcomeResource::class,
             ])
             ->pages([
                 ...$config->getPages(),

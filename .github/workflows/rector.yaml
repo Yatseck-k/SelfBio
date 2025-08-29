@@ -1,32 +1,76 @@
-# github action that checks code with Rector
-name: Rector
+name: Rector Code Quality
 
 on:
   pull_request:
-    branches: [ main, master, develop ]
+    branches: [ "main", "master", "develop" ]
 
 jobs:
   rector:
     runs-on: ubuntu-latest
     if: github.event.pull_request.head.repo.full_name == github.repository
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
+          fetch-depth: 0
 
-      - uses: shivammathur/setup-php@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.4
+          php-version: '8.4'
+          extensions: mbstring, xml, tokenizer, curl, json
           coverage: none
 
-      - uses: ramsey/composer-install@v3
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
-      - name: Run Rector
-        run: vendor/bin/rector process --ansi
+      - name: Install Composer dependencies
+        run: composer install -q --no-ansi --no-interaction --no-progress --prefer-dist
 
-      - name: Commit Rector changes
+      - name: Cache Rector analysis
+        uses: actions/cache@v4
+        with:
+          path: storage/rector
+          key: ${{ runner.os }}-rector-${{ hashFiles('rector.php') }}
+          restore-keys: ${{ runner.os }}-rector-
+
+      - name: Run Rector analysis
+        run: vendor/bin/rector process --ansi --no-progress-bar
+
+      - name: Check for code changes
+        id: verify-changed-files
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Files changed by Rector:"
+            git status --porcelain
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No files changed by Rector"
+          fi
+
+      - name: Commit Rector improvements
+        if: steps.verify-changed-files.outputs.changed == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: '[rector] Rector fixes'
-          commit_author: 'GitHub Action <actions@github.com>'
-          commit_user_email: 'action@github.com'
+          commit_message: '🤖 [rector] Apply automatic code improvements'
+          commit_author: 'Rector Bot <rector@github-actions.com>'
+          commit_user_email: 'rector@github-actions.com'
+
+      - name: Comment on PR
+        if: steps.verify-changed-files.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🤖 **Rector автоматически улучшил код**\n\nПроверьте внесённые изменения и убедитесь, что они корректны.'
+            })

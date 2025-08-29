@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Services\BlogService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class BlogController extends Controller
 {
@@ -21,6 +22,6 @@ class BlogController extends Controller
     {
         $response = $this->blogService->getPost($request);
 
-        return $response ? response()->json($response) : response()->json(['message' => 'Not found'], 404);
+        return $response ? response()->json($response) : response()->json(['message' => 'Not found'], Response::HTTP_NOT_FOUND);
     }
 }

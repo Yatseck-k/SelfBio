@@ -1,6 +1,7 @@
 <script setup>
 import {ref, onMounted} from 'vue';
 import {router} from '@inertiajs/vue3';
+import {trans} from 'laravel-vue-i18n';
 
 const posts = ref([]);
 const loading = ref(true);
@@ -12,7 +13,7 @@ const fetchPosts = async (page = 1) => {
     error.value = '';
     try {
         const res = await fetch(`/api/blog?page=${page}`);
-        if (!res.ok) throw new Error('Ошибка загрузки: ' + res.status);
+        if (!res.ok) throw new Error(trans('Loading error') + ': ' + res.status);
         const data = await res.json();
         posts.value = data.data || [];
         pagination.value = {
@@ -38,9 +39,9 @@ onMounted(() => fetchPosts());
             class="w-full max-w-4xl min-h-[320px] mx-auto px-12 py-10 rounded-2xl border border-gray-700 bg-gradient-to-r from-[#222230f5] via-[#191a23f8] to-[#232334e2] flex flex-col gap-10 flat-modern"
         >
             <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-8 tracking-tight text-left drop-shadow">
-                <span>Блог</span>
+                <span>{{ trans('Blog') }}</span>
             </h1>
-            <div v-if="loading" class="text-lg text-gray-300 my-10 animate-pulse">Загрузка…</div>
+            <div v-if="loading" class="text-lg text-gray-300 my-10 animate-pulse">{{ trans('Loading...') }}</div>
             <div v-else-if="error" class="text-lg text-red-400 my-10">{{ error }}</div>
             <div v-else>
                 <div v-if="posts && posts.length" class="flex flex-col gap-8">
@@ -66,7 +67,7 @@ onMounted(() => fetchPosts());
                                         post.published_at ? new Date(post.published_at).toLocaleDateString('ru-RU') : '—'
                                     }}
                                 </div>
-                                <p class="text-gray-200 leading-relaxed mb-3 min-h-[44px] line-clamp-3">
+                                <p class="text-gray-100 leading-relaxed mb-3 min-h-[44px] line-clamp-3">
                                     {{ post.preview || '...' }}
                                 </p>
                             </div>
@@ -75,13 +76,13 @@ onMounted(() => fetchPosts());
                                     class="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-pink-600/20 hover:from-indigo-600/30 hover:to-pink-600/30 text-white font-bold py-3 px-7 rounded-lg border border-white/10 shadow-lg transition"
                                     @click="router.visit(`/blog/${post.slug}`)"
                                 >
-                                    Читать полностью
+                                    {{ trans('Read more') }}
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div v-else class="text-gray-400 text-center mt-8">Постов пока нет.</div>
+                <div v-else class="text-gray-400 text-center mt-8">{{ trans('No posts yet') }}</div>
 
                 <!-- Пагинация -->
                 <div v-if="pagination.last > 1" class="flex gap-3 justify-center mt-10 pb-2">
@@ -90,60 +91,20 @@ onMounted(() => fetchPosts());
                         @click="fetchPosts(pagination.current - 1)"
                         class="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-pink-600/20 hover:from-indigo-600/30 hover:to-pink-600/30 text-white font-bold py-3 px-7 rounded-lg border border-white/10 shadow-lg transition disabled:opacity-40 disabled:cursor-not-allowed"
                     >
-                        Назад
+                        {{ trans('Previous') }}
                     </button>
                     <span class="text-gray-300 px-3 text-lg font-semibold select-none">
-                    Стр. {{ pagination.current }} / {{ pagination.last }}
+                    {{ trans('Page') }} {{ pagination.current }} / {{ pagination.last }}
                 </span>
                     <button
                         :disabled="!pagination.next"
                         @click="fetchPosts(pagination.current + 1)"
                         class="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-pink-600/20 hover:from-indigo-600/30 hover:to-pink-600/30 text-white font-bold py-3 px-7 rounded-lg border border-white/10 shadow-lg transition disabled:opacity-40 disabled:cursor-not-allowed"
                     >
-                        Вперёд
+                        {{ trans('Next') }}
                     </button>
                 </div>
             </div>
         </section>
     </div>
 </template>
-
-<style scoped>
-.flat-modern {
-    box-shadow: 0 4px 32px #3a117c19, 0 2px 4px #0002;
-    border-radius: 1.25rem;
-    background: linear-gradient(105deg, #23234eec 0%, #181929f2 55%, #1e1d31ed 100%);
-    position: relative;
-}
-
-.flat-modern:before {
-    content: "";
-    display: block;
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
-    height: 36px;
-    border-radius: 80% 80% 35% 35% / 50% 30% 80% 75%;
-    background: linear-gradient(90deg, #fff5 10%, #fff9 65%, #fff0 100%);
-    opacity: 0.10;
-    filter: blur(4px);
-    z-index: 2;
-}
-
-.title-gradient {
-    background: linear-gradient(90deg, #c084fc 20%, #60a5fa 50%, #f472b6 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-}
-
-.line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-</style>

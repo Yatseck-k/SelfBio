@@ -86,6 +86,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Available Locales
+    |--------------------------------------------------------------------------
+    |
+    | List all locales that your application supports. This configuration is
+    | used by middleware and components to validate and manage languages.
+    |
+    */
+
+    'available_locales' => ['en', 'ru'],
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |
