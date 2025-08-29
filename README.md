@@ -1,7 +1,5 @@
 # SelfBio
 
-**Современная платформа для персонального сайта с блогом и страницей контактов. Админка — на Moonshine (Laravel), фронтенд — на Vue 3.**
-
 ## Стек
 
 - **Laravel 12.19.3**, PHP 8.4.10
@@ -82,13 +80,6 @@ sail artisan horizon
 sail composer update
 sail npm update
 ```
-
-## Особенности
-
-- Контактная страница и блог редактируются только из админки Moonshine
-- REST API только на чтение
-- Все сервисы запускаются docker-compose + Sail
-- Встроенная поддержка очередей, почты, Websockets, rich-text
 
 ## Лицензия
 MIT
