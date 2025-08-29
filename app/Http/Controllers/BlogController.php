@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Services\BlogService;
@@ -8,9 +10,7 @@ use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    public function __construct(private readonly BlogService $blogService)
-    {
-    }
+    public function __construct(private readonly BlogService $blogService) {}
 
     public function index(Request $request): JsonResponse
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\BlogPost;
@@ -9,9 +11,7 @@ use Illuminate\Support\Facades\Cache;
 
 class BlogService
 {
-    public function __construct(private readonly CacheService $cacheService, private readonly BlogPost $blogPost)
-    {
-    }
+    public function __construct(private readonly CacheService $cacheService, private readonly BlogPost $blogPost) {}
 
     public function getPosts(Request $request): LengthAwarePaginator
     {

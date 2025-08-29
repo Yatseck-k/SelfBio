@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Services\ContactInfoService;
@@ -7,9 +9,7 @@ use Illuminate\Http\JsonResponse;
 
 class ContactController extends Controller
 {
-    public function __construct(private readonly ContactInfoService $contactInfoService)
-    {
-    }
+    public function __construct(private readonly ContactInfoService $contactInfoService) {}
 
     public function show(): JsonResponse
     {
