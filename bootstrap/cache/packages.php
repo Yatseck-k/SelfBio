@@ -1,112 +1,91 @@
-<?php return  [
+<?php return array (
   'inertiajs/inertia-laravel' => 
-   [
+  array (
     'providers' => 
-     [
-      0 => \Inertia\ServiceProvider::class,
-    ],
-  ],
+    array (
+      0 => 'Inertia\\ServiceProvider',
+    ),
+  ),
   'laravel/horizon' => 
-   [
+  array (
     'aliases' => 
-     [
-      'Horizon' => \Laravel\Horizon\Horizon::class,
-    ],
+    array (
+      'Horizon' => 'Laravel\\Horizon\\Horizon',
+    ),
     'providers' => 
-     [
-      0 => \Laravel\Horizon\HorizonServiceProvider::class,
-    ],
-  ],
-  'laravel/pail' => 
-   [
-    'providers' => 
-     [
-      0 => \Laravel\Pail\PailServiceProvider::class,
-    ],
-  ],
-  'laravel/sail' => 
-   [
-    'providers' => 
-     [
-      0 => \Laravel\Sail\SailServiceProvider::class,
-    ],
-  ],
+    array (
+      0 => 'Laravel\\Horizon\\HorizonServiceProvider',
+    ),
+  ),
   'laravel/sanctum' => 
-   [
+  array (
     'providers' => 
-     [
-      0 => \Laravel\Sanctum\SanctumServiceProvider::class,
-    ],
-  ],
+    array (
+      0 => 'Laravel\\Sanctum\\SanctumServiceProvider',
+    ),
+  ),
   'laravel/tinker' => 
-   [
+  array (
     'providers' => 
-     [
-      0 => \Laravel\Tinker\TinkerServiceProvider::class,
-    ],
-  ],
+    array (
+      0 => 'Laravel\\Tinker\\TinkerServiceProvider',
+    ),
+  ),
   'livewire/flux' => 
-   [
+  array (
     'aliases' => 
-     [
-      'Flux' => \Flux\Flux::class,
-    ],
+    array (
+      'Flux' => 'Flux\\Flux',
+    ),
     'providers' => 
-     [
-      0 => \Flux\FluxServiceProvider::class,
-    ],
-  ],
+    array (
+      0 => 'Flux\\FluxServiceProvider',
+    ),
+  ),
   'livewire/livewire' => 
-   [
+  array (
     'aliases' => 
-     [
-      'Livewire' => \Livewire\Livewire::class,
-    ],
+    array (
+      'Livewire' => 'Livewire\\Livewire',
+    ),
     'providers' => 
-     [
-      0 => \Livewire\LivewireServiceProvider::class,
-    ],
-  ],
+    array (
+      0 => 'Livewire\\LivewireServiceProvider',
+    ),
+  ),
   'moonshine/moonshine' => 
-   [
+  array (
     'providers' => 
-     [
-      0 => \MoonShine\Laravel\Providers\MoonShineServiceProvider::class,
-    ],
-  ],
+    array (
+      0 => 'MoonShine\\Laravel\\Providers\\MoonShineServiceProvider',
+    ),
+  ),
   'nesbot/carbon' => 
-   [
+  array (
     'providers' => 
-     [
-      0 => \Carbon\Laravel\ServiceProvider::class,
-    ],
-  ],
-  'nunomaduro/collision' => 
-   [
-    'providers' => 
-     [
-      0 => \NunoMaduro\Collision\Adapters\Laravel\CollisionServiceProvider::class,
-    ],
-  ],
+    array (
+      0 => 'Carbon\\Laravel\\ServiceProvider',
+    ),
+  ),
   'nunomaduro/termwind' => 
-   [
+  array (
     'providers' => 
-     [
-      0 => \Termwind\Laravel\TermwindServiceProvider::class,
-    ],
-  ],
+    array (
+      0 => 'Termwind\\Laravel\\TermwindServiceProvider',
+    ),
+  ),
   'tightenco/ziggy' => 
-   [
+  array (
     'providers' => 
-     [
-      0 => \Tighten\Ziggy\ZiggyServiceProvider::class,
-    ],
-  ],
+    array (
+      0 => 'Tighten\\Ziggy\\ZiggyServiceProvider',
+    ),
+  ),
   'vladimir-yuldashev/laravel-queue-rabbitmq' => 
-   [
+  array (
     'providers' => 
-     [
-      0 => \VladimirYuldashev\LaravelQueueRabbitMQ\LaravelQueueRabbitMQServiceProvider::class,
-    ],
-  ],
-];
+    array (
+      0 => 'VladimirYuldashev\\LaravelQueueRabbitMQ\\LaravelQueueRabbitMQServiceProvider',
+    ),
+  ),
+);
