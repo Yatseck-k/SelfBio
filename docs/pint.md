@@ -1,6 +1,5 @@
 ## Инструкция Pint:
 
-
 - Проверить только нарушения (без правок):
   ```bash
   sail pint --test
@@ -18,7 +17,6 @@
   sail pint app/Http/Controllers
   sail pint app/Http/Controllers/SomeController.php
   ```
-
 - Форматировать весь проект:
   ```bash
   sail pint
