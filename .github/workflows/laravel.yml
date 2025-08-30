@@ -2,12 +2,110 @@ name: Laravel Tests
 
 on:
   push:
-    branches: [ "main", "master", "develop" ]
+    branches: [ 'main', 'dev' ]
   pull_request:
-    branches: [ "main", "master", "develop" ]
+    branches: [ 'main', 'dev' ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   laravel-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, tokenizer, curl, json, bcmath, ctype, fileinfo, openssl, pdo, pdo_mysql, gd, zip
+          coverage: xdebug
+          tools: composer:v2
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Create testing environment file
+        run: |
+          cp .env.example .env.testing
+          echo "DB_CONNECTION=mysql" >> .env.testing
+          echo "DB_HOST=127.0.0.1" >> .env.testing
+          echo "DB_PORT=3306" >> .env.testing
+          echo "DB_DATABASE=testing" >> .env.testing
+          echo "DB_USERNAME=root" >> .env.testing
+          echo "DB_PASSWORD=password" >> .env.testing
+
+      - name: Install Composer dependencies
+        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Generate application key
+        run: php artisan key:generate --env=testing
+
+      - name: Set secure directory permissions
+        run: |
+          sudo chmod 755 storage
+          sudo chmod 755 bootstrap/cache
+          sudo chmod -R 775 storage/logs
+          sudo chmod -R 775 storage/framework
+
+      - name: Run database migrations
+        run: php artisan migrate --env=testing --force
+
+      - name: Seed test database
+        run: php artisan db:seed --env=testing --force
+        continue-on-error: true
+
+      - name: Run Laravel tests
+        run: php artisan test --env=testing --coverage --coverage-clover=coverage.xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: true
+        continue-on-error: true
+
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            storage/logs/
+            coverage.xml
+          retention-days: 7
+
+  static-analysis:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,6 +118,7 @@ jobs:
           php-version: '8.4'
           extensions: mbstring, xml, tokenizer, curl, json
           coverage: none
+          tools: composer:v2, phpstan, psalm
 
       - name: Cache Composer dependencies
         uses: actions/cache@v4
@@ -28,37 +127,13 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Copy environment file
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-
       - name: Install Composer dependencies
-        run: composer install -q --no-ansi --no-interaction --no-progress --prefer-dist
+        run: composer install --no-dev --no-interaction --prefer-dist
 
-      - name: Generate application key
-        run: php artisan key:generate
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --memory-limit=2G
+        continue-on-error: true
 
-      - name: Set directory permissions
-        run: chmod -R 777 storage bootstrap/cache
-
-      - name: Create SQLite database
-        run: |
-          mkdir -p database
-          touch database/database.sqlite
-
-      - name: Run Laravel tests
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: php artisan test --coverage
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install NPM dependencies
-        run: npm ci
-
-      - name: Build frontend assets
-        run: npm run build
+      - name: Run PHP CS Fixer (dry-run)
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
+        continue-on-error: true
