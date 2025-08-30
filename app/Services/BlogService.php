@@ -12,12 +12,12 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 
-readonly class BlogService implements BaseServiceInterface
+class BlogService implements BaseServiceInterface
 {
     public function __construct(
-        private CacheHelper $cacheHelper,
-        private BlogPost $blogPost,
-        private BlogPostDto $dto,
+        private readonly CacheHelper $cacheHelper,
+        private readonly BlogPost $blogPost,
+        private readonly BlogPostDto $dto,
     ) {}
 
     public function getClassName(): string

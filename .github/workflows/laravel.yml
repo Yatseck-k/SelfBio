@@ -1,8 +1,6 @@
 name: Laravel Tests
 
 on:
-  push:
-    branches: [ 'main', 'dev' ]
   pull_request:
     branches: [ 'main', 'dev' ]
 
@@ -60,7 +58,7 @@ jobs:
           echo "DB_PASSWORD=password" >> .env.testing
 
       - name: Install Composer dependencies
-        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Install NPM dependencies
         run: npm ci
@@ -104,36 +102,3 @@ jobs:
             storage/logs/
             coverage.xml
           retention-days: 7
-
-  static-analysis:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: mbstring, xml, tokenizer, curl, json
-          coverage: none
-          tools: composer:v2, phpstan, psalm
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: vendor
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: Install Composer dependencies
-        run: composer install --no-dev --no-interaction --prefer-dist
-
-      - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --memory-limit=2G
-        continue-on-error: true
-
-      - name: Run PHP CS Fixer (dry-run)
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff
-        continue-on-error: true

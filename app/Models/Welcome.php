@@ -16,7 +16,7 @@ class Welcome extends Model implements BaseModelInterface
         return self::class;
     }
 
-    public function getWelcomeData(): BaseModelInterface
+    public function getWelcomeData(): ?BaseModelInterface
     {
         return self::query()->first();
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dto;
 
 use App\Dto\Interfaces\DtoInterface;
@@ -9,7 +11,7 @@ class ContactInfoDto implements DtoInterface
 {
     public function getData(?BaseModelInterface $model): array
     {
-        if (! $model) {
+        if (!$model) {
             return [];
         }
 

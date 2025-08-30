@@ -9,10 +9,7 @@ use Illuminate\Http\JsonResponse;
 
 class WelcomeController extends Controller
 {
-    public function __construct(Welcome $welcome)
-    {
-        $this->welcome = $welcome;
-    }
+    public function __construct(private readonly Welcome $welcome) {}
 
     public function index(): JsonResponse
     {
