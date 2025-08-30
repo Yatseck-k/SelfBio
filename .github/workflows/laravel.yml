@@ -125,8 +125,8 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install Composer dependencies
-        run: composer install --no-dev --no-interaction --prefer-dist
+      - name: Install Composer dependencies (with dev)
+        run: composer install --no-interaction --prefer-dist
 
       - name: Run Laravel Pint (Code Style Check)
         run: ./vendor/bin/pint --test
