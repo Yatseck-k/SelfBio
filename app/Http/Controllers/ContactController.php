@@ -15,6 +15,6 @@ class ContactController extends Controller
     {
         $contact = $this->contactInfoService->getContactInfo();
 
-        return ! empty($contact) ? response()->json($contact) : response()->json(['message' => 'Not found'], 404);
+        return !empty($contact) ? response()->json($contact) : response()->json(['message' => 'Not found'], 404);
     }
 }

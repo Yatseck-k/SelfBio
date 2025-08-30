@@ -11,7 +11,7 @@ class ContactInfoDto implements DtoInterface
 {
     public function getData(?BaseModelInterface $model): array
     {
-        if (! $model) {
+        if (!$model) {
             return [];
         }
 

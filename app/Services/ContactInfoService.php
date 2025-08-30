@@ -10,8 +10,8 @@ use App\Models\ContactInfo;
 class ContactInfoService
 {
     public function __construct(
-        private  ContactInfoDto $dto,
-        private  ContactInfo $contactInfo
+        private readonly ContactInfoDto $dto,
+        private readonly ContactInfo $contactInfo
     ) {}
 
     public function getContactInfo(): array

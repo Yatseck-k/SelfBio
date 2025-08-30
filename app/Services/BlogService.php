@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Cache;
 class BlogService implements BaseServiceInterface
 {
     public function __construct(
-        private CacheHelper $cacheHelper,
-        private BlogPost $blogPost,
-        private BlogPostDto $dto,
+        private readonly CacheHelper $cacheHelper,
+        private readonly BlogPost $blogPost,
+        private readonly BlogPostDto $dto,
     ) {}
 
     public function getClassName(): string

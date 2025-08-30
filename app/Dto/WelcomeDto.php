@@ -10,7 +10,7 @@ class WelcomeDto
 {
     public function getData(?BaseModelInterface $model): array
     {
-        if (! $model) {
+        if (!$model) {
             return [];
         }
 
