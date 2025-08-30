@@ -6,6 +6,7 @@ namespace App\MoonShine\Layouts;
 
 use App\MoonShine\Resources\BlogPostResource;
 use App\MoonShine\Resources\ContactInfoResource;
+use App\MoonShine\Resources\WelcomeResource;
 use MoonShine\ColorManager\ColorManager;
 use MoonShine\Contracts\ColorManager\ColorManagerContract;
 use MoonShine\Laravel\Layouts\AppLayout;
@@ -38,6 +39,7 @@ final class MoonShineLayout extends AppLayout
                     BlogPostResource::class
                 )->icon('pencil-square'),
             ]),
+            MenuItem::make('Welcomes', WelcomeResource::class),
         ];
     }
 

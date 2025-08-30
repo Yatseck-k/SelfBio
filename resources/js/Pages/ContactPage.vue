@@ -1,5 +1,6 @@
 <script setup>
 import {ref, onMounted} from 'vue';
+import {trans} from 'laravel-vue-i18n';
 
 const contact = ref(null);
 const loading = ref(true);
@@ -8,7 +9,7 @@ const error = ref('');
 onMounted(async () => {
     try {
         const res = await fetch('/api/contacts');
-        if (!res.ok) throw new Error('Ошибка загрузки: ' + res.status);
+        if (!res.ok) throw new Error(trans('Loading error') + ': ' + res.status);
         contact.value = await res.json();
     } catch (e) {
         error.value = e.message;
@@ -31,30 +32,30 @@ onMounted(async () => {
                 aria-hidden="true"
             ></div>
             <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2 tracking-tight text-center relative z-10">
-                Контактная информация
+                {{ trans('Contact Information') }}
             </h1>
 
-            <div v-if="loading" class="text-center text-gray-300 text-lg font-medium relative z-10">Загрузка...</div>
+            <div v-if="loading" class="text-center text-gray-300 text-lg font-medium relative z-10">{{ trans('Loading...') }}</div>
             <div v-else-if="error" class="text-center text-red-500 font-semibold relative z-10">{{ error }}</div>
 
             <div v-else-if="contact" class="space-y-6 relative z-10">
                 <ul class="divide-y divide-gray-700">
                     <li v-if="contact.name" class="py-3 flex items-center gap-4">
-                        <span class="text-gray-400 w-32 shrink-0 flex items-center">👤 Имя:</span>
+                        <span class="text-gray-400 w-32 shrink-0 flex items-center">👤 {{ trans('Name') }}:</span>
                         <span class="text-gray-100 font-semibold">{{ contact.name }}</span>
                     </li>
                     <li v-if="contact.phone" class="py-3 flex items-center gap-4">
-                        <span class="text-gray-400 w-32 shrink-0 flex items-center">📞 Телефон:</span>
+                        <span class="text-gray-400 w-32 shrink-0 flex items-center">📞 {{ trans('Phone') }}:</span>
                         <span class="text-gray-100 font-mono">{{ contact.phone }}</span>
                     </li>
                     <li v-if="contact.email" class="py-3 flex items-center gap-4">
-                        <span class="text-gray-400 w-32 shrink-0 flex items-center">📧 Email:</span>
+                        <span class="text-gray-400 w-32 shrink-0 flex items-center">📧 {{ trans('Email') }}:</span>
                         <a :href="`mailto:${contact.email}`" class="text-blue-400 hover:underline">
                             {{ contact.email }}
                         </a>
                     </li>
                     <li v-if="contact.telegram" class="py-3 flex items-center gap-4">
-                        <span class="text-gray-400 w-32 shrink-0 flex items-center">💬 Telegram:</span>
+                        <span class="text-gray-400 w-32 shrink-0 flex items-center">💬 {{ trans('Telegram') }}:</span>
                         <a
                             :href="`https://t.me/${contact.telegram.replace('@','')}`"
                             class="text-blue-400 hover:underline"
@@ -64,7 +65,7 @@ onMounted(async () => {
                         </a>
                     </li>
                     <li v-if="contact.github" class="py-3 flex items-center gap-4">
-                        <span class="text-gray-400 w-32 shrink-0 flex items-center">🐙 GitHub:</span>
+                        <span class="text-gray-400 w-32 shrink-0 flex items-center">🐙 {{ trans('GitHub') }}:</span>
                         <a :href="`https://github.com/${contact.github}`" class="text-blue-400 hover:underline"
                            target="_blank">
                             {{ contact.github }}
@@ -72,7 +73,7 @@ onMounted(async () => {
                     </li>
                 </ul>
                 <div v-if="contact.socials && contact.socials.length" class="pt-4">
-                    <h3 class="text-lg font-bold text-gray-200 mb-2">Другие соцсети:</h3>
+                    <h3 class="text-lg font-bold text-gray-200 mb-2">{{ trans('Other social networks') }}:</h3>
                     <ul class="flex flex-col gap-3">
                         <li v-for="(soc, idx) in contact.socials" :key="idx" class="flex items-center gap-3">
                             <span class="inline-block bg-gray-700 text-gray-300 rounded px-2 py-1 text-xs uppercase">
@@ -87,7 +88,7 @@ onMounted(async () => {
                 </div>
             </div>
 
-            <div v-else class="text-center text-gray-400 relative z-10">Нет данных для отображения.</div>
+            <div v-else class="text-center text-gray-400 relative z-10">{{ trans('No data to display') }}.</div>
         </section>
     </div>
 </template>

@@ -1,5 +1,14 @@
 <script setup>
 import {Head, router} from '@inertiajs/vue3';
+import {ref, onMounted} from 'vue';
+import {trans} from 'laravel-vue-i18n';
+import LanguageSwitcher from '@/Components/LanguageSwitcher.vue';
+
+const welcome = ref({
+    title: trans('Welcome!'),
+    body: trans('Loading content...')
+});
+const loading = ref(true);
 
 function goToContacts() {
     router.visit('/contacts');
@@ -8,10 +17,26 @@ function goToContacts() {
 function goToBlog() {
     router.visit('/blog');
 }
+
+onMounted(async () => {
+    try {
+        const res = await fetch('/api/welcome');
+        if (res.ok) {
+            const data = await res.json();
+            welcome.value = data;
+        }
+    } catch (e) {
+        console.error(trans('Error loading homepage data') + ':', e);
+    } finally {
+        loading.value = false;
+    }
+});
 </script>
 
 <template>
-    <Head title="Главная"/>
+
+    <Head :title="trans('Home')"/>
+    <LanguageSwitcher/>
     <div
         class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 relative overflow-hidden">
         <div
@@ -27,27 +52,23 @@ function goToBlog() {
             <div class="shine"></div>
             <div class="text-center space-y-6">
                 <h1 class="text-4xl sm:text-5xl font-extrabold text-white mb-2 drop-shadow-lg">
-                    Привет, это я <span>👋</span>
+                    {{ welcome.title }} <span>👋</span>
                 </h1>
-                <p class="text-xl text-gray-200 font-medium tracking-wide">
-                    Я — backend-разработчик.<br>
-                    Люблю чистый код, Laravel, автоматизацию и API.<br>
-                    Помогаю запускать быстрые, удобные и устойчивые сервисы.<br>
-                    Веду блог о технологиях.
-                </p>
+                <div class="text-xl text-gray-200 font-medium tracking-wide leading-relaxed"
+                     v-html="welcome.body"></div>
             </div>
             <div class="flex gap-6 justify-center w-full">
                 <button
                     @click="goToContacts"
                     class="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-pink-600/20 hover:from-indigo-600/30 hover:to-pink-600/30 text-white font-bold py-3 px-7 rounded-lg border border-white/10 shadow-lg transition"
                 >
-                    Мои контакты
+                    {{ trans('My contacts') }}
                 </button>
                 <button
                     @click="goToBlog"
                     class="bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-pink-600/20 hover:from-indigo-600/30 hover:to-pink-600/30 text-white font-bold py-3 px-7 rounded-lg border border-white/10 shadow-lg transition"
                 >
-                    Мой блог
+                    {{ trans('My blog') }}
                 </button>
             </div>
         </div>
@@ -62,4 +83,3 @@ function goToBlog() {
     position: relative;
 }
 </style>
-

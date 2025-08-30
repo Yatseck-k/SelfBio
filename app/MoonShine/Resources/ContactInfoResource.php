@@ -7,16 +7,10 @@ namespace App\MoonShine\Resources;
 use App\Models\ContactInfo;
 use Illuminate\Database\Eloquent\Builder;
 use MoonShine\Laravel\Resources\ModelResource;
-use MoonShine\MenuManager\Attributes\Group;
-use MoonShine\MenuManager\Attributes\Order;
-use MoonShine\Support\Attributes\Icon;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Json;
 use MoonShine\UI\Fields\Text;
 
-#[Icon('at-symbol')]
-#[Group('Контент', 'contacts')]
-#[Order(2)]
 class ContactInfoResource extends ModelResource
 {
     protected string $model = ContactInfo::class;
@@ -25,7 +19,7 @@ class ContactInfoResource extends ModelResource
 
     public function getTitle(): string
     {
-        return 'Контактная информация';
+        return __('moonshine::contacts.resource.title');
     }
 
     public function canCreate(): bool
@@ -57,13 +51,13 @@ class ContactInfoResource extends ModelResource
     {
         return [
             ID::make()->sortable(),
-            Text::make('Название', 'name')->required(),
-            Text::make('Телефон', 'phone'),
-            Text::make('Email', 'email')->required(),
-            Text::make('Telegram', 'telegram'),
-            Text::make('Github', 'github'),
-            Json::make('Соцсети', 'socials')
-                ->hint('Например: [{"type": "vk", "url": "https://vk.com/username"}]'),
+            Text::make(__('moonshine::contacts.fields.name'), 'name')->required(),
+            Text::make(__('moonshine::contacts.fields.phone'), 'phone'),
+            Text::make(__('moonshine::contacts.fields.email'), 'email')->required(),
+            Text::make(__('moonshine::contacts.fields.telegram'), 'telegram'),
+            Text::make(__('moonshine::contacts.fields.github'), 'github'),
+            Json::make(__('moonshine::contacts.fields.socials'), 'socials')
+                ->hint(__('moonshine::contacts.hints.socials')),
         ];
     }
 

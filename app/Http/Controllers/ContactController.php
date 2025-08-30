@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Services\ContactInfoService;
@@ -7,14 +9,12 @@ use Illuminate\Http\JsonResponse;
 
 class ContactController extends Controller
 {
-    public function __construct(private readonly ContactInfoService $contactInfoService)
-    {
-    }
+    public function __construct(private readonly ContactInfoService $contactInfoService) {}
 
     public function show(): JsonResponse
     {
         $contact = $this->contactInfoService->getContactInfo();
 
-        return $contact ? response()->json($contact) : response()->json(['message' => 'Not found'], 404);
+        return ! empty($contact) ? response()->json($contact) : response()->json(['message' => 'Not found'], 404);
     }
 }

@@ -19,11 +19,12 @@ use MoonShine\UI\Fields\Textarea;
 class BlogPostResource extends ModelResource
 {
     protected string $model = BlogPost::class;
+
     protected string $column = 'title';
 
     public function getTitle(): string
     {
-        return 'Блог';
+        return __('moonshine::blog.resource.title');
     }
 
     protected function indexFields(): iterable
@@ -31,17 +32,18 @@ class BlogPostResource extends ModelResource
         return [
             ID::make()->sortable(),
 
-            Text::make('Заголовок', 'title')
+            Text::make(__('moonshine::blog.fields.title'), 'title')
                 ->sortable(),
 
-            Text::make('Slug', 'slug')
+            Text::make(__('moonshine::blog.fields.slug'), 'slug')
                 ->sortable(),
 
-            Image::make('Обложка', 'image')
-                ->disk('public')->dir('blog')
+            Image::make(__('moonshine::blog.fields.image'), 'image')
+                ->disk('public')
+                ->dir('blog')
                 ->removable(),
 
-            Date::make('Дата публикации', 'published_at')
+            Date::make(__('moonshine::blog.fields.published_at'), 'published_at')
                 ->format('Y-m-d H:i')
                 ->sortable(),
         ];
@@ -55,31 +57,31 @@ class BlogPostResource extends ModelResource
     protected function formFields(): iterable
     {
         return [
-            Text::make('Заголовок', 'title')
+            Text::make(__('moonshine::blog.fields.title'), 'title')
                 ->required()
-                ->hint('Главный заголовок поста'),
+                ->hint(__('moonshine::blog.hints.title')),
 
-            Text::make('Slug', 'slug')
+            Text::make(__('moonshine::blog.fields.slug'), 'slug')
                 ->required()
-                ->hint('Для красивых URL, латиница и дефисы (заполнять вручную или автогенерировать на фронте админки)'),
+                ->hint(__('moonshine::blog.hints.slug')),
 
-            Textarea::make('Анонс', 'preview')
+            Textarea::make(__('moonshine::blog.fields.preview'), 'preview')
                 ->required()
-                ->hint('Краткое описание/превью в ленте'),
+                ->hint(__('moonshine::blog.hints.preview')),
 
-            Textarea::make('Текст поста', 'body')
+            Textarea::make(__('moonshine::blog.fields.body'), 'body')
                 ->required()
-                ->hint('Полный текст c разметкой (поддерживается Markdown/HTML)'),
+                ->hint(__('moonshine::blog.hints.body')),
 
-            Image::make('Обложка', 'image')
+            Image::make(__('moonshine::blog.fields.image'), 'image')
                 ->disk('public')->dir('blog')
                 ->removable()
                 ->allowedExtensions(['jpg', 'jpeg', 'png', 'gif'])
-                ->hint('Основная картинка для поста'),
+                ->hint(__('moonshine::blog.hints.image')),
 
-            Date::make('Дата публикации', 'published_at')
+            Date::make(__('moonshine::blog.fields.published_at'), 'published_at')
                 ->required()
-                ->hint('Когда показать пост в блоге (Y-m-d H:i)'),
+                ->hint(__('moonshine::blog.hints.published_at')),
         ];
     }
 
