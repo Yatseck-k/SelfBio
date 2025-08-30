@@ -22,7 +22,7 @@ class SetLocale
             ?? $this->getPreferredLanguage($request)
             ?? config('app.locale');
 
-        if (in_array($locale, config('app.available_locales', [self::EN, self::RU]))) {
+        if (in_array($locale, config('app.available_locales', [self::EN, self::RU]), true)) {
             App::setLocale($locale);
         }
 

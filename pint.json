@@ -1,0 +1,41 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "declare_strict_types": true,
+        "strict_param": true,
+        "no_unused_imports": true,
+        "ordered_imports": {
+            "imports_order": [
+                "class",
+                "function",
+                "const"
+            ],
+            "sort_algorithm": "alpha"
+        },
+        "trailing_comma_in_multiline": true,
+        "no_extra_blank_lines": {
+            "tokens": [
+                "extra",
+                "throw",
+                "use"
+            ]
+        },
+        "binary_operator_spaces": {
+            "default": "single_space"
+        },
+        "cast_spaces": {
+            "space": "single"
+        }
+    },
+    "exclude": [
+        "node_modules",
+        "storage",
+        "vendor",
+        "bootstrap",
+        "config",
+        "lang",
+        "public",
+        "*.blade.php",
+        "tests"
+    ]
+}
