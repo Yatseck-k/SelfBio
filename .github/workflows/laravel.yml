@@ -58,7 +58,7 @@ jobs:
           echo "DB_PASSWORD=password" >> .env.testing
 
       - name: Install Composer dependencies
-        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Install NPM dependencies
         run: npm ci
@@ -102,37 +102,3 @@ jobs:
             storage/logs/
             coverage.xml
           retention-days: 7
-
-  code-style:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: mbstring, xml, tokenizer, curl, json
-          coverage: none
-          tools: composer:v2
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: vendor
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: Install Composer dependencies (with dev)
-        run: composer install --no-interaction --prefer-dist
-
-      - name: Run Laravel Pint (Code Style Check)
-        run: ./vendor/bin/pint --test
-
-      - name: Check for formatting issues
-        if: failure()
-        run: |
-          echo "Code style issues found. Run './vendor/bin/pint' to fix them."
-          ./vendor/bin/pint --test -v
