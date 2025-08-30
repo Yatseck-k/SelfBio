@@ -1,8 +1,6 @@
 name: Laravel Tests
 
 on:
-  push:
-    branches: [ 'main', 'dev' ]
   pull_request:
     branches: [ 'main', 'dev' ]
 
@@ -105,7 +103,7 @@ jobs:
             coverage.xml
           retention-days: 7
 
-  static-analysis:
+  code-style:
     runs-on: ubuntu-latest
 
     steps:
@@ -118,7 +116,7 @@ jobs:
           php-version: '8.4'
           extensions: mbstring, xml, tokenizer, curl, json
           coverage: none
-          tools: composer:v2, phpstan, psalm
+          tools: composer:v2
 
       - name: Cache Composer dependencies
         uses: actions/cache@v4
@@ -130,10 +128,11 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-dev --no-interaction --prefer-dist
 
-      - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --memory-limit=2G
-        continue-on-error: true
+      - name: Run Laravel Pint (Code Style Check)
+        run: ./vendor/bin/pint --test
 
-      - name: Run PHP CS Fixer (dry-run)
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff
-        continue-on-error: true
+      - name: Check for formatting issues
+        if: failure()
+        run: |
+          echo "Code style issues found. Run './vendor/bin/pint' to fix them."
+          ./vendor/bin/pint --test -v
