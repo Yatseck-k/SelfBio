@@ -18,7 +18,7 @@ class Welcome extends Model implements BaseModelInterface
 
     public function getWelcomeData(): BaseModelInterface
     {
-        return self::first();
+        return self::query()->first();
     }
 
     protected $fillable = [

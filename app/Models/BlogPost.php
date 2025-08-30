@@ -26,7 +26,7 @@ class BlogPost extends Model implements BaseModelInterface
 
     public function getPosts(): LengthAwarePaginator
     {
-        return self::whereNotNull('published_at')
+        return self::query()->whereNotNull('published_at')
             ->where('published_at', '<=', now())
             ->orderByDesc('published_at')
             ->paginate(10);
@@ -34,7 +34,7 @@ class BlogPost extends Model implements BaseModelInterface
 
     public function getPost(string $slug): ?BaseModelInterface
     {
-        return self::where('slug', $slug)
+        return self::query()->where('slug', $slug)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now())
             ->first();

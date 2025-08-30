@@ -9,7 +9,6 @@ export default {
         extend: {},
     },
     plugins: [
-        // подключите при необходимости
         require('@tailwindcss/forms'),
         require('@tailwindcss/typography'),
     ],

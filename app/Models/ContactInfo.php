@@ -18,7 +18,7 @@ class ContactInfo extends Model implements BaseModelInterface
 
     public function getContactInfo(): ?BaseModelInterface
     {
-        return self::first();
+        return self::query()->first();
     }
 
     protected $fillable = [

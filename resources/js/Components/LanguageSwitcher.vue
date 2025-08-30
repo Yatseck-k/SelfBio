@@ -13,12 +13,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { usePage } from '@inertiajs/vue3';
-import { router } from '@inertiajs/vue3';
 
 const page = usePage();
 const currentLocale = ref('ru');
 
-// Получаем текущую локаль из Laravel
 const pageLocale = computed(() => page.props.locale || 'ru');
 
 onMounted(() => {
@@ -29,7 +27,6 @@ const toggleLanguage = async () => {
     const newLocale = currentLocale.value === 'ru' ? 'en' : 'ru';
 
     try {
-        // Отправляем запрос на изменение языка
         await fetch('/api/language', {
             method: 'POST',
             headers: {
@@ -39,10 +36,8 @@ const toggleLanguage = async () => {
             body: JSON.stringify({ locale: newLocale })
         });
 
-        // Обновляем текущую локаль
         currentLocale.value = newLocale;
 
-        // Перезагружаем страницу для применения изменений
         window.location.reload();
 
     } catch (error) {
