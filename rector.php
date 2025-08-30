@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Php82\Rector\Class_\ReadOnlyClassRector;
 use Rector\Set\ValueObject\LevelSetList;
 use RectorLaravel\Set\LaravelLevelSetList;
 use RectorLaravel\Set\LaravelSetList;
@@ -19,6 +21,11 @@ return RectorConfig::configure()
         __DIR__.'/config',
         __DIR__.'/lang',
         __DIR__.'/public',
+
+        ClassPropertyAssignToConstructorPromotionRector::class,
+        ReadOnlyClassRector::class,
+        'Rector\Php81\Rector\Property\ReadOnlyPropertyRector',
+        'Rector\Php82\Rector\Class_\ReadOnlyClassRector',
     ])
     ->withCache(__DIR__.'/storage/rector')
     ->withParallel()

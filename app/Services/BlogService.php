@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 
-readonly class BlogService implements BaseServiceInterface
+class BlogService implements BaseServiceInterface
 {
     public function __construct(
         private CacheHelper $cacheHelper,
