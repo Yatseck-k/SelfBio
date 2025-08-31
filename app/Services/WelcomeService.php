@@ -6,14 +6,17 @@ namespace App\Services;
 
 use App\Dto\Interfaces\DtoInterface;
 use App\Dto\WelcomeDto;
+use App\Helpers\CacheHelper;
 use App\Models\Welcome;
 use App\Services\Interfaces\BaseServiceInterface;
+use Illuminate\Support\Facades\Cache;
 
 class WelcomeService implements BaseServiceInterface
 {
     public function __construct(
-        protected WelcomeDto $dto,
-        protected Welcome $welcome
+        private readonly Welcome $model,
+        private readonly WelcomeDto $dto,
+        private readonly CacheHelper $cacheHelper,
     ) {}
 
     public function getClassName(): string
@@ -23,6 +26,10 @@ class WelcomeService implements BaseServiceInterface
 
     public function getWelcomeInfo(): ?DtoInterface
     {
-        return $this->dto->getDto($this->welcome->getData());
+        return Cache::remember(
+            $this->cacheHelper->getCacheKey('welcome.index', 'data'),
+            CacheHelper::TTL_60,
+            fn () => $this->dto->getDto($this->model->getData())
+        );
     }
 }
