@@ -6,15 +6,21 @@ namespace App\Http\Controllers;
 
 use App\Services\ContactInfoService;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class ContactController extends Controller
 {
-    public function __construct(private readonly ContactInfoService $contactInfoService) {}
+    public function __construct(
+        private readonly ContactInfoService $contactInfoService
+    ) {}
 
     public function show(): JsonResponse
     {
-        $contact = $this->contactInfoService->getContactInfo();
+        $response = $this->contactInfoService->getContactInfo()->toArray();
 
-        return !empty($contact) ? response()->json($contact) : response()->json(['message' => 'Not found'], 404);
+        return !empty($response) ? response()->json($response) : response()->json(
+            ['message' => Response::$statusTexts[Response::HTTP_NOT_FOUND]],
+            Response::HTTP_NOT_FOUND
+        );
     }
 }

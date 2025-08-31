@@ -16,7 +16,7 @@ class ContactInfo extends Model implements BaseModelInterface
         return self::class;
     }
 
-    public function getContactInfo(): ?BaseModelInterface
+    public function getData(): ?BaseModelInterface
     {
         return self::query()->first();
     }
