@@ -2,7 +2,6 @@
 import {Head, router} from '@inertiajs/vue3';
 import {ref, onMounted} from 'vue';
 import {trans} from 'laravel-vue-i18n';
-import LanguageSwitcher from '@/Components/LanguageSwitcher.vue';
 
 const welcome = ref({
     title: trans('Welcome!'),
@@ -34,9 +33,7 @@ onMounted(async () => {
 </script>
 
 <template>
-
     <Head :title="trans('Home')"/>
-    <LanguageSwitcher/>
     <div
         class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 relative overflow-hidden">
         <div

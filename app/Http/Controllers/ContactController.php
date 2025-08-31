@@ -18,9 +18,11 @@ class ContactController extends Controller
     {
         $response = $this->contactInfoService->getContactInfo()->toArray();
 
-        return !empty($response) ? response()->json($response) : response()->json(
-            ['message' => Response::$statusTexts[Response::HTTP_NOT_FOUND]],
-            Response::HTTP_NOT_FOUND
-        );
+        return !empty($response) ?
+            response()->json($response) :
+            response()->json(
+                ['message' => Response::$statusTexts[Response::HTTP_NOT_FOUND]],
+                Response::HTTP_NOT_FOUND
+            );
     }
 }

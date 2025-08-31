@@ -39,8 +39,6 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'locale' => app()->getLocale(),
-            'available_locales' => config('app.available_locales', ['en', 'ru']),
         ];
     }
 }

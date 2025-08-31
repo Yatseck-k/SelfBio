@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Cache;
 class BlogService implements BaseServiceInterface
 {
     public function __construct(
-        private readonly CacheHelper $cacheHelper,
-        private readonly BlogPost $blogPost,
+        private readonly BlogPost $model,
         private readonly BlogPostDto $dto,
+        private readonly CacheHelper $cacheHelper,
     ) {}
 
     public function getClassName(): string
@@ -31,7 +31,7 @@ class BlogService implements BaseServiceInterface
         return Cache::remember(
             $this->cacheHelper->getCacheKey('blog.index.page', $request->get('page', 1)),
             CacheHelper::TTL_60,
-            fn () => $this->blogPost->getPosts()
+            fn () => $this->model->getPosts()
         );
     }
 
@@ -42,7 +42,7 @@ class BlogService implements BaseServiceInterface
         return Cache::remember(
             $this->cacheHelper->getCacheKey('blog.show', $slug),
             CacheHelper::TTL_60,
-            fn () => $this->dto->getDto($this->blogPost->getPost($slug))
+            fn () => $this->dto->getDto($this->model->getPost($slug))
         );
     }
 }
