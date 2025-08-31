@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Dto\BlogPostDto;
+use App\Dto\Interfaces\DtoInterface;
 use App\Helpers\CacheHelper;
 use App\Models\BlogPost;
 use App\Services\Interfaces\BaseServiceInterface;
@@ -34,14 +35,14 @@ class BlogService implements BaseServiceInterface
         );
     }
 
-    public function getPost(Request $request): ?array
+    public function getPost(Request $request): ?DtoInterface
     {
         $slug = $request->route('slug');
 
         return Cache::remember(
             $this->cacheHelper->getCacheKey('blog.show', $slug),
             CacheHelper::TTL_60,
-            fn () => $this->dto->getData($this->blogPost->getPost($slug))
+            fn () => $this->dto->getDto($this->blogPost->getPost($slug))
         );
     }
 }

@@ -8,5 +8,7 @@ use App\Models\Interfaces\BaseModelInterface;
 
 interface DtoInterface
 {
-    public function getData(?BaseModelInterface $model): array;
+    public function getDto(?BaseModelInterface $model): ?self;
+
+    public function toArray(): array;
 }

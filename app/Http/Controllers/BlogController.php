@@ -20,8 +20,13 @@ class BlogController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $response = $this->blogService->getPost($request);
+        $response = $this->blogService->getPost($request)->toArray();
 
-        return $response ? response()->json($response) : response()->json(['message' => 'Not found'], Response::HTTP_NOT_FOUND);
+        return $response ?
+            response()->json($response) :
+            response()->json(
+                ['message' => Response::$statusTexts[Response::HTTP_NOT_FOUND]],
+                Response::HTTP_NOT_FOUND
+            );
     }
 }
