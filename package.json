@@ -26,6 +26,6 @@
         "laravel-echo": "^2.1.6",
         "laravel-vue-i18n": "^2.8.0",
         "pusher-js": "^8.4.0",
-        "vue-router": "^4.5.1"
+        "vue-router": "^4.6.3"
     }
 }
