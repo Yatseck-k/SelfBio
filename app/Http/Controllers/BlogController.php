@@ -22,7 +22,7 @@ class BlogController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $response = $this->blogService->getPost($request)->toArray();
+        $response = $this->blogService->getPost($request)?->toArray();
 
         return !empty($response) ?
             response()->json($response) :

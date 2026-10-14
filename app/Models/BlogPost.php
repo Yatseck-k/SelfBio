@@ -5,19 +5,24 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Interfaces\BaseModelInterface;
+use Illuminate\Database\Eloquent\Attributes\Connection;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Orchid\Screen\AsSource;
 
+#[Fillable([
+    'title',
+    'slug',
+    'preview',
+    'body',
+    'image',
+    'published_at',
+])]
+#[Connection('pgsql')]
 class BlogPost extends Model implements BaseModelInterface
 {
-    protected $fillable = [
-        'title',
-        'slug',
-        'preview',
-        'body',
-        'image',
-        'published_at',
-    ];
+    use AsSource;
 
     public function getClassName(): string
     {
@@ -28,7 +33,7 @@ class BlogPost extends Model implements BaseModelInterface
     {
         return self::query()->whereNotNull('published_at')
             ->where('published_at', '<=', now())
-            ->orderByDesc('published_at')
+            ->latest('published_at')
             ->paginate(10);
     }
 

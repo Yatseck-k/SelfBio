@@ -9,18 +9,18 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
-        "inertiajs/inertia-laravel": "^2.0",
-        "laravel/framework": "^12.0",
+        "php": "^8.5",
+        "inertiajs/inertia-laravel": "^3.0",
+        "laravel/framework": "^13.0",
         "laravel/horizon": "^5.33",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.10.1",
+        "laravel/tinker": "^3.0",
         "livewire/flux": "^2.2",
-        "livewire/livewire": "^3.6",
-        "moonshine/moonshine": "^3.15",
+        "livewire/livewire": "^4.0",
+        "orchid/platform": "^14.0",
         "pusher/pusher-php-server": "^7.2",
         "tightenco/ziggy": "^2.5",
-        "vladimir-yuldashev/laravel-queue-rabbitmq": "^14.2"
+        "vladimir-yuldashev/laravel-queue-rabbitmq": "^15.0"
     },
     "require-dev": {
         "driftingly/rector-laravel": "^2.0",
@@ -30,12 +30,14 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3",
+        "phpunit/phpunit": "^13.0",
         "rector/rector": "^2.1"
     },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "Whodoku\\": "app/Whodoku/",
+            "Whodoku\\Database\\Seeders\\": "database/whodoku/seeders/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
@@ -79,6 +81,9 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
+        "platform": {
+            "php": "8.5.0"
+        },
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true

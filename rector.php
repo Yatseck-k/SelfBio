@@ -10,6 +10,10 @@ use RectorLaravel\Set\LaravelSetList;
 return RectorConfig::configure()
     ->withPaths([
         __DIR__.'/app',
+        __DIR__.'/database',
+        __DIR__.'/app/Whodoku',
+        __DIR__.'/database/whodoku',
+        __DIR__.'/routes/whodoku',
         __DIR__.'/resources',
         __DIR__.'/routes',
         __DIR__.'/tests',
@@ -21,14 +25,14 @@ return RectorConfig::configure()
         __DIR__.'/public',
     ])
     ->withCache(__DIR__.'/storage/rector')
-    ->withParallel()
+    ->withoutParallel()
     ->withPhpSets()
     ->withTypeCoverageLevel(1)
     ->withDeadCodeLevel(1)
     ->withCodeQualityLevel(1)
     ->withSets([
-        LevelSetList::UP_TO_PHP_84,
-        LaravelLevelSetList::UP_TO_LARAVEL_120,
+        LevelSetList::UP_TO_PHP_85,
+        LaravelLevelSetList::UP_TO_LARAVEL_130,
         LaravelSetList::LARAVEL_CODE_QUALITY,
         LaravelSetList::LARAVEL_COLLECTION,
         LaravelSetList::LARAVEL_ARRAY_STR_FUNCTION_TO_STATIC_CALL,

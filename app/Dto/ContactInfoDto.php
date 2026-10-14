@@ -9,15 +9,15 @@ use App\Models\Interfaces\BaseModelInterface;
 
 class ContactInfoDto implements DtoInterface
 {
-    private string $name;
+    private ?string $name = null;
 
-    private string $phone;
+    private ?string $phone = null;
 
-    private string $email;
+    private ?string $email = null;
 
-    private string $telegram;
+    private ?string $telegram = null;
 
-    private string $github;
+    private ?string $github = null;
 
     private array $socials;
 
@@ -49,35 +49,35 @@ class ContactInfoDto implements DtoInterface
         ];
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function setPhone(string $phone): self
+    public function setPhone(?string $phone): self
     {
         $this->phone = $phone;
 
         return $this;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
         return $this;
     }
 
-    public function setTelegram(string $telegram): self
+    public function setTelegram(?string $telegram): self
     {
         $this->telegram = $telegram;
 
         return $this;
     }
 
-    public function setGithub(string $github): self
+    public function setGithub(?string $github): self
     {
         $this->github = $github;
 
@@ -97,27 +97,27 @@ class ContactInfoDto implements DtoInterface
         return $this;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function getPhone(): string
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function getTelegram(): string
+    public function getTelegram(): ?string
     {
         return $this->telegram;
     }
 
-    public function getGithub(): string
+    public function getGithub(): ?string
     {
         return $this->github;
     }

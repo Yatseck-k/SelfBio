@@ -33,6 +33,8 @@ public_html/storage
 Homestead.json
 Homestead.yaml
 bootstrap/compiled.php
+/bootstrap/cache/packages.php
+/bootstrap/cache/services.php
 app/storage/
 
 .yarn/
@@ -40,3 +42,8 @@ yarn.lock
 phpunit.xml
 phpunit.xml.dist
 /public/vendor/
+
+# Private repair exports and imported conversations
+/storage/app/private/
+/scripts/__pycache__/
+/storage/rector/

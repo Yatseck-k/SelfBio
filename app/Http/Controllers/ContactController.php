@@ -16,7 +16,7 @@ class ContactController extends Controller
 
     public function show(): JsonResponse
     {
-        $response = $this->contactInfoService->getContactInfo()->toArray();
+        $response = $this->contactInfoService->getContactInfo()?->toArray();
 
         return !empty($response) ?
             response()->json($response) :

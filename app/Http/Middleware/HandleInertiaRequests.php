@@ -16,7 +16,15 @@ class HandleInertiaRequests extends Middleware
      *
      * @var string
      */
+    #[\Override]
     protected $rootView = 'app';
+
+    public function rootView(Request $request): string
+    {
+        return $request->is('game', 'profile', 'rating', 'story', 'shop', 'shop/return/*', 'rules', 'offer', 'privacy', 'puzzles*')
+            ? 'whodoku'
+            : 'app';
+    }
 
     /**
      * Determines the current asset version.
@@ -39,6 +47,7 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
+            'signedIn' => $request->user() !== null,
         ];
     }
 }

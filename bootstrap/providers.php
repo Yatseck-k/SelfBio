@@ -2,5 +2,6 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\MoonShineServiceProvider::class,
+    Whodoku\Providers\AppServiceProvider::class,
+    Whodoku\Providers\WhodokuServiceProvider::class,
 ];

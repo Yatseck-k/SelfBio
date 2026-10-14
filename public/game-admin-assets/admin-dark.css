@@ -1,0 +1,67 @@
+/*
+ * Shared SelfBio palette for the Orchid administration screens.
+ */
+:root:not([data-admin-theme='light']) { background: #030712; color-scheme: dark; }
+
+:root[data-admin-theme='dark'] {
+    color-scheme: dark;
+    --admin-bg: #030712;
+    --admin-surface: #111827;
+    --admin-surface-2: #1f2937;
+    --admin-border: #374151;
+    --admin-ink: #f9fafb;
+    --admin-muted: #cbd5e1;
+    --admin-link: #a5b4fc;
+    --bs-primary: #047857;
+    --bs-primary-rgb: 4, 120, 87;
+    --bs-body-color: var(--admin-ink);
+    --bs-body-bg: var(--admin-bg);
+    --bs-emphasis-color: #fff;
+    --bs-secondary-color: var(--admin-muted);
+    --bs-border-color: var(--admin-border);
+    --bs-link-color: var(--admin-link);
+    --bs-link-hover-color: #c7d2fe;
+    --bs-secondary-bg: var(--admin-surface-2);
+    --bs-tertiary-bg: var(--admin-surface);
+    background: var(--admin-bg);
+
+    & body, & .workspace { background: var(--admin-bg); color: var(--admin-ink); }
+    & .workspace { background-image: radial-gradient(circle at 48% 5%, rgb(99 102 241 / 13%), transparent 35rem), linear-gradient(135deg, #030712, #111827 58%, #0f172a); }
+    & .btn-primary { background: #047857; border-color: #047857; color: #fff; }
+    & .btn-primary:hover { background: #059669; border-color: #059669; }
+
+    & .bg-white, & .bg-light, & .bg-body, & .bg-body-tertiary, & .card, & .layout, & .modal-content, & .dropdown-menu,
+    & .form-control, & .form-select, & .table, & .form-check-input, & .nav-tabs .nav-link.active, & .layout-wrapper,
+    & .page-link, & .popover, & .tooltip-inner { background-color: var(--admin-surface) !important; color: var(--admin-ink); border-color: var(--admin-border); }
+    & .table > :not(caption) > * > * { background-color: transparent; color: var(--admin-ink); border-color: var(--admin-border); }
+    & .table-hover > tbody > tr:hover > * { background-color: var(--admin-surface-2); }
+
+    & .workspace a:not(.btn):not(.dropdown-item):not(.nav-link):not(.page-link), & .breadcrumb a { color: var(--admin-link); }
+    & .text-body-secondary, & .text-muted, & .form-text, & small { color: var(--admin-muted) !important; }
+    & .text-black, & .text-dark, & h1, & h2, & h3, & h4, & h5, & h6, & label, & .form-label { color: var(--admin-ink) !important; }
+    & .border, & .border-bottom, & .border-top { border-color: var(--admin-border) !important; }
+    & .btn-default { background: var(--admin-surface-2); color: var(--admin-ink); border-color: var(--admin-border); }
+    & .btn-link { color: var(--admin-link); }
+    & .dropdown-item { color: var(--admin-ink); }
+    & .dropdown-item:hover { background: var(--admin-surface-2); }
+    & .form-control::placeholder { color: var(--admin-muted); }
+    & .modal-header, & .modal-footer { border-color: var(--admin-border); }
+    & .btn-close { filter: invert(1); }
+    & .admin-theme-toggle { background: var(--admin-surface-2); color: var(--admin-ink); border-color: var(--admin-border); }
+}
+
+/* The toggle button (injected by admin-theme.js). */
+.admin-theme-toggle {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1080;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #ced4da;
+    border-radius: 999px;
+    background: #fff;
+    color: #212529;
+    font-size: 0.85rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+}

@@ -3,29 +3,43 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "typecheck:whodoku": "vue-tsc --noEmit -p tsconfig.whodoku.json",
+        "lint:whodoku": "eslint resources/whodoku/js",
+        "test:whodoku": "vitest run --config vitest.whodoku.config.ts",
+        "dark:whodoku": "node resources/whodoku/tools/make-dark-theme.mjs"
     },
     "devDependencies": {
-        "@inertiajs/vue3": "^2.0.17",
-        "@tailwindcss/forms": "^0.5.7",
-        "@tailwindcss/typography": "^0.5.10",
-        "@tailwindcss/vite": "^4.0.0",
-        "@vitejs/plugin-vue": "^5.2.4",
-        "@vue/test-utils": "^2.4.6",
-        "autoprefixer": "^10.4.16",
+        "@eslint/js": "^10.0.1",
+        "@inertiajs/vue3": "^3.9.1",
+        "@tailwindcss/forms": "^0.5.11",
+        "@tailwindcss/typography": "^0.5.20",
+        "@tailwindcss/vite": "^4.3.3",
+        "@types/node": "^26.6.5",
+        "@vitejs/plugin-vue": "^6.0.10",
+        "@vue/test-utils": "^2.5.1",
         "axios-mock-adapter": "^2.1.0",
-        "concurrently": "^9.0.1",
-        "laravel-vite-plugin": "^1.3.0",
-        "postcss": "^8.4.32",
-        "tailwindcss": "^3.4.0",
-        "vite": "^6.2.4",
-        "vue": "^3.5.18"
+        "concurrently": "^10.0.6",
+        "eslint": "^10.12.0",
+        "eslint-plugin-vue": "^10.11.1",
+        "jsdom": "^29.1.1",
+        "laravel-vite-plugin": "^3.2.0",
+        "tailwindcss": "^4.3.3",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.71.2",
+        "vite": "^8.3.4",
+        "vitest": "^5.0.4",
+        "vue": "^3.5.44",
+        "vue-tsc": "^3.3.13"
     },
     "dependencies": {
-        "axios": "^1.8.2",
-        "laravel-echo": "^2.1.6",
-        "laravel-vue-i18n": "^2.8.0",
-        "pusher-js": "^8.4.0",
-        "vue-router": "^4.5.1"
+        "axios": "^1.20.0",
+        "laravel-echo": "^2.6.1",
+        "laravel-vue-i18n": "^2.9.0",
+        "pusher-js": "^8.6.0",
+        "vue-router": "^5.4.0"
+    },
+    "overrides": {
+        "postcss-selector-parser": "^7.1.6"
     }
 }

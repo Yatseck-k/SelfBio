@@ -1,0 +1,152 @@
+{
+  "ui": {
+    "documentTitle": "Ремонт — каталог переписки",
+    "title": "Ремонт",
+    "subtitle": "Переписка и материалы по комнатам и темам",
+    "searchPlaceholder": "Поиск по сообщениям, файлам и ссылкам…",
+    "searchLabel": "Поиск",
+    "statusFilterLabel": "Актуальность",
+    "statusAll": "Все статусы",
+    "statusActive": "Актуальные",
+    "statusInactive": "Неактуальные",
+    "kindFilterLabel": "Тип материалов",
+    "kindAll": "Все материалы",
+    "kindImages": "С изображениями",
+    "kindFiles": "С документами",
+    "kindLinks": "Со ссылками",
+    "sortLabel": "Сортировка",
+    "sortNewest": "Сначала новые",
+    "sortOldest": "Сначала старые",
+    "roomsLabel": "Комнаты и разделы",
+    "allSections": "Все разделы",
+    "stats": "{sections} разделов · {messages} сообщений · {images} изображений · {files} файлов",
+    "undoAvailable": "Перенос выполнен",
+    "undoButton": "Отменить",
+    "loading": "Загружаю каталог ремонта…",
+    "fatalTitle": "Откройте каталог через Docker",
+    "fatalDescription": "Для переноса материалов и сохранения статусов страница должна быть запущена через локальный сервер.",
+    "runInFolder": "В папке",
+    "runThen": "выполните",
+    "runThenOpen": "затем откройте",
+    "moveTitle": "Перенести запись",
+    "moveDescription": "Запись будет отнесена к новому разделу. Вложенные файлы останутся на своих местах.",
+    "newSection": "Новый раздел",
+    "moveTo": "Перенести в…",
+    "chooseSection": "Выберите раздел",
+    "cancel": "Отмена",
+    "move": "Перенести",
+    "moving": "Перемещаю…",
+    "inactiveBadge": "Неактуально",
+    "sourceLink": "исходник ↗",
+    "openImage": "Открыть фото: {name}",
+    "closeViewer": "Закрыть просмотр",
+    "mediaUnsupported": "Этот формат не удалось показать в браузере.",
+    "downloadFile": "Скачать файл",
+    "markInactive": "Пометить неактуальным",
+    "markActive": "Вернуть актуальность",
+    "emptyResults": "По заданным условиям записей нет.",
+    "records": "{count} записей",
+    "loadMore": "Показать ещё {count}",
+    "moveSummary": "Сообщение #{id} · {images} изображений · {files} файлов · {links} ссылок",
+    "statusSetInactive": "Запись помечена как неактуальная",
+    "statusSetActive": "Актуальность восстановлена",
+    "moveSuccess": "Запись и связанные материалы перенесены",
+    "undoSuccess": "Последний перенос отменён",
+    "errorAction": "Не удалось выполнить действие",
+    "errorCatalog": "Не удалось загрузить каталог",
+    "errorLocale": "Не удалось загрузить файл русской локализации",
+    "errorUnknown": "Произошла ошибка. Повторите попытку.",
+    "projectFolder": "Ремонт",
+    "unknownAuthor": "Участник",
+    "importButton": "Импортировать",
+    "importTitle": "Импорт переписки",
+    "importDescription": "Загрузите ZIP с исходным экспортом Telegram или уже разобранным каталогом.",
+    "importKind": "Тип данных",
+    "importExport": "Исходный Telegram-экспорт",
+    "importParsed": "Разобранная переписка",
+    "importFile": "ZIP-файл",
+    "importWarning": "Импорт заменит текущий каталог. Сохраните копию локальных данных, если нужны внесённые правки.",
+    "importChooseFile": "Выберите ZIP-файл",
+    "importing": "Импортирую…",
+    "importSuccess": "Импортировано сообщений: {count}"
+  },
+  "sections": {
+    "00_planning_budget": {
+      "name": "Планировка и смета",
+      "room": "Планировка и смета"
+    },
+    "01_kitchen": {
+      "name": "Кухня",
+      "room": "Кухня-гостиная",
+      "zone": "Кухня"
+    },
+    "02_bathroom": {
+      "name": "Ванная",
+      "room": "Ванная"
+    },
+    "03_toilet_laundry": {
+      "name": "Туалет и постирочная",
+      "room": "Туалет и постирочная"
+    },
+    "04_entry_hall": {
+      "name": "Прихожая и коридор",
+      "room": "Прихожая и коридор"
+    },
+    "05_bedroom": {
+      "name": "Спальня",
+      "room": "Спальня"
+    },
+    "06_living_room": {
+      "name": "Гостиная",
+      "room": "Кухня-гостиная",
+      "zone": "Гостиная"
+    },
+    "07_kids_room": {
+      "name": "Детская",
+      "room": "Детская"
+    },
+    "08_office": {
+      "name": "Кабинет",
+      "room": "Кабинет-балкон",
+      "zone": "Кабинет"
+    },
+    "09_balcony": {
+      "name": "Балкон",
+      "room": "Кабинет-балкон",
+      "zone": "Балкон"
+    },
+    "10_electrical_lighting": {
+      "name": "Электрика и освещение",
+      "room": "Электрика и освещение"
+    },
+    "11_plumbing_ventilation": {
+      "name": "Сантехника и вентиляция",
+      "room": "Сантехника и вентиляция"
+    },
+    "12_finishes_materials": {
+      "name": "Отделка и материалы",
+      "room": "Отделка и материалы"
+    },
+    "13_furniture_storage": {
+      "name": "Мебель и хранение",
+      "room": "Мебель и хранение"
+    },
+    "14_purchases_contractors": {
+      "name": "Покупки и подрядчики",
+      "room": "Покупки и подрядчики"
+    },
+    "15_work_progress": {
+      "name": "Задачи и ход работ",
+      "room": "Задачи и ход работ"
+    },
+    "16_apartment_inspection": {
+      "name": "Приемка квартиры и дефекты",
+      "room": "Приемка квартиры и дефекты"
+    },
+    "99_unclassified": {
+      "name": "Неразобранное",
+      "room": "Неразобранное"
+    }
+  },
+  "language": "ru"
+}

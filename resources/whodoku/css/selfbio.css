@@ -1,0 +1,195 @@
+/* The game keeps its own layouts and map colors; its surrounding UI follows SelfBio. */
+:root[data-theme='dark'] {
+    --desk-bg: #030712;
+    --font-display: 'Golos Text', ui-sans-serif, system-ui, sans-serif;
+    --font-title: 'Golos Text', ui-sans-serif, system-ui, sans-serif;
+    color: #f9fafb;
+    background: #030712;
+}
+
+:root[data-theme='dark'] h1,
+:root[data-theme='dark'] .rank-title { font-weight: 800; letter-spacing: -0.035em; }
+
+:root[data-theme='dark'] .public-page,
+:root[data-theme='dark'] .game-page {
+    --case-paper: #111827;
+    --case-paper-light: #1f2937;
+    --case-ink: #f9fafb;
+    --case-muted: #cbd5e1;
+    --case-wine: #6366f1;
+    --case-wine-dark: #4338ca;
+    --case-wine-ink: #a5b4fc;
+    --case-wine-dark-ink: #c7d2fe;
+    --case-gold: #a5b4fc;
+    --case-green: #172033;
+    color: var(--case-ink);
+    background: radial-gradient(circle at 48% 5%, rgb(99 102 241 / 13%), transparent 35rem), linear-gradient(135deg, #030712, #111827 58%, #0f172a);
+    border: 0;
+}
+
+:root[data-theme='dark'] .public-header {
+    border-bottom: 1px solid rgb(255 255 255 / 10%);
+    background: rgb(3 7 18 / 84%);
+    box-shadow: none;
+}
+:root[data-theme='dark'] .public-header .brand,
+:root[data-theme='dark'] .public-header .quiet-link,
+:root[data-theme='dark'] .public-header .site-home-link { color: #f9fafb; }
+:root[data-theme='dark'] .public-header .quiet-link { color: #d1d5db; }
+:root[data-theme='dark'] .public-header .site-home-link { border-color: #4b5563; border-radius: .65rem; }
+:root[data-theme='dark'] .public-header .site-home-link:hover { background: rgb(255 255 255 / 10%); }
+:root[data-theme='dark'] .game-revision { color: #cbd5e1; }
+
+:root[data-theme='dark'] .page-card,
+:root[data-theme='dark'] .catalog-intro,
+:root[data-theme='dark'] .game-heading,
+:root[data-theme='dark'] .puzzle-card.case-card,
+:root[data-theme='dark'] .state-card,
+:root[data-theme='dark'] .game-panel,
+:root[data-theme='dark'] .game-controls,
+:root[data-theme='dark'] .hint-card,
+:root[data-theme='dark'] .ending-card,
+:root[data-theme='dark'] .profile-hero,
+:root[data-theme='dark'] .stat-card,
+:root[data-theme='dark'] .term-card,
+:root[data-theme='dark'] .rule-card,
+:root[data-theme='dark'] .data-card,
+:root[data-theme='dark'] .leaderboard li {
+    border: 1px solid #374151;
+    border-radius: 1.2rem;
+    background: linear-gradient(145deg, #1f2937, #111827);
+    color: #f9fafb;
+    box-shadow: 0 20px 50px rgb(0 0 0 / 22%), 0 0 38px rgb(99 102 241 / 7%);
+}
+:root[data-theme='dark'] .catalog-intro,
+:root[data-theme='dark'] .game-heading,
+:root[data-theme='dark'] .puzzle-card.case-card { border-left: 4px solid #6366f1; }
+:root[data-theme='dark'] .puzzle-card.case-card h2,
+:root[data-theme='dark'] .clue-heading h2,
+:root[data-theme='dark'] .game-panel h2 { color: #f9fafb; }
+:root[data-theme='dark'] .puzzle-card.case-card > p:not(.eyebrow),
+:root[data-theme='dark'] .catalog-intro > p:last-child,
+:root[data-theme='dark'] .case-card-meta,
+:root[data-theme='dark'] .state-card p { color: #cbd5e1; }
+:root[data-theme='dark'] .case-pin,
+:root[data-theme='dark'] .level-chip b { background: #6366f1; border-color: #c7d2fe; }
+:root[data-theme='dark'] .case-file-label { border-color: #6366f1; background: #312e81; color: #c7d2fe; }
+:root[data-theme='dark'] .case-story { border-color: #818cf8; background: #202544; color: #d1d5db; }
+:root[data-theme='dark'] .case-preview,
+:root[data-theme='dark'] .map-legend-group,
+:root[data-theme='dark'] .token-button,
+:root[data-theme='dark'] .clue-card,
+:root[data-theme='dark'] .player-chip,
+:root[data-theme='dark'] .level-chip,
+:root[data-theme='dark'] .chip-row button,
+:root[data-theme='dark'] .recent-list li {
+    border-color: #4b5563;
+    background: #111827;
+    color: #f9fafb;
+}
+:root[data-theme='dark'] .player-chip-text strong,
+:root[data-theme='dark'] .player-chip-text small { color: #f9fafb; }
+:root[data-theme='dark'] .level-chip:hover,
+:root[data-theme='dark'] .token-button:hover { border-color: #818cf8; background: #202544; }
+:root[data-theme='dark'] .level-nav { background: linear-gradient(#111827 80%, transparent); }
+:root[data-theme='dark'] .level-heading { border-bottom-color: #4b5563; }
+:root[data-theme='dark'] .chip-row button.is-active { border-color: #6366f1; background: #4f46e5; }
+:root[data-theme='dark'] .public-page .primary-action,
+:root[data-theme='dark'] .game-page .primary-action { border-color: #4338ca; background: #4f46e5; color: #fff; box-shadow: none; }
+:root[data-theme='dark'] .public-page .primary-action:hover,
+:root[data-theme='dark'] .game-page .primary-action:hover { background: #6366f1; }
+:root[data-theme='dark'] .secondary-action,
+:root[data-theme='dark'] .game-page .secondary-action,
+:root[data-theme='dark'] .mode-switch button { border-color: #4b5563; background: #374151; color: #f9fafb; }
+:root[data-theme='dark'] .telegram-login .secondary-action { border-color: #047857; background: #047857; color: #fff; }
+:root[data-theme='dark'] .telegram-login .secondary-action:hover { background: #059669; }
+:root[data-theme='dark'] .game-controls { border-top: 3px solid #6366f1; }
+:root[data-theme='dark'] .token-button.is-selected,
+:root[data-theme='dark'] .mode-switch .is-active { border-color: #818cf8; background: #312e81; color: #fff; }
+:root[data-theme='dark'] .clue-panel { border-color: #374151; background: #1f2937; }
+:root[data-theme='dark'] .clue-progress { border-color: #4b5563; background: #374151; color: #e5e7eb; }
+:root[data-theme='dark'] .map-section { border-color: #4b5563; background: #172033; }
+:root[data-theme='dark'] .map-viewport { border-color: #4b5563; background: #111827; }
+:root[data-theme='dark'] .rank-bar span { background: linear-gradient(90deg, #6366f1, #10b981); }
+:root[data-theme='dark'] .leaderboard-place { color: #a5b4fc; }
+:root[data-theme='dark'] .leaderboard li.is-me { border-color: #818cf8; background: #202544; }
+:root[data-theme='dark'] .eyebrow,
+:root[data-theme='dark'] .catalog-intro .eyebrow,
+:root[data-theme='dark'] .case-collection { color: #a5b4fc; }
+:root[data-theme='dark'] a:focus-visible,
+:root[data-theme='dark'] button:focus-visible { outline: 3px solid #a5b4fc; outline-offset: 3px; }
+
+/* A saved light preference keeps the same typography and indigo accent. */
+:root[data-theme='light'] {
+    --desk-bg: #e2e8f0;
+    --font-display: 'Golos Text', ui-sans-serif, system-ui, sans-serif;
+    --font-title: 'Golos Text', ui-sans-serif, system-ui, sans-serif;
+    background: #e2e8f0;
+}
+:root[data-theme='light'] h1,
+:root[data-theme='light'] .rank-title { font-weight: 800; letter-spacing: -0.035em; }
+:root[data-theme='light'] .public-page,
+:root[data-theme='light'] .game-page {
+    --case-paper: #f8fafc;
+    --case-paper-light: #fff;
+    --case-ink: #17212b;
+    --case-muted: #475569;
+    --case-wine: #4f46e5;
+    --case-wine-dark: #3730a3;
+    --case-wine-ink: #4338ca;
+    --case-wine-dark-ink: #312e81;
+    --case-gold: #818cf8;
+    --case-green: #e2e8f0;
+    background: #f8fafc;
+    border: 0;
+}
+:root[data-theme='light'] .public-header { border-bottom: 1px solid #334155; background: #111827; color: #fff; box-shadow: none; }
+:root[data-theme='light'] .public-header .brand,
+:root[data-theme='light'] .public-header .quiet-link,
+:root[data-theme='light'] .public-header .site-home-link { color: #f9fafb; }
+:root[data-theme='light'] .public-header .site-home-link { border-color: #64748b; border-radius: .65rem; }
+:root[data-theme='light'] .page-card,
+:root[data-theme='light'] .catalog-intro,
+:root[data-theme='light'] .game-heading,
+:root[data-theme='light'] .puzzle-card.case-card,
+:root[data-theme='light'] .state-card,
+:root[data-theme='light'] .game-panel,
+:root[data-theme='light'] .game-controls,
+:root[data-theme='light'] .hint-card,
+:root[data-theme='light'] .ending-card,
+:root[data-theme='light'] .profile-hero,
+:root[data-theme='light'] .stat-card,
+:root[data-theme='light'] .term-card,
+:root[data-theme='light'] .rule-card,
+:root[data-theme='light'] .data-card,
+:root[data-theme='light'] .leaderboard li {
+    border: 1px solid #cbd5e1;
+    border-radius: 1.2rem;
+    background: #fff;
+    color: #17212b;
+    box-shadow: 0 12px 28px rgb(15 23 42 / 8%);
+}
+:root[data-theme='light'] .catalog-intro,
+:root[data-theme='light'] .game-heading,
+:root[data-theme='light'] .puzzle-card.case-card { border-left: 4px solid #4f46e5; }
+:root[data-theme='light'] .public-page .primary-action,
+:root[data-theme='light'] .game-page .primary-action { border-color: #4338ca; background: #4f46e5; color: #fff; box-shadow: none; }
+:root[data-theme='light'] .public-page .primary-action:hover,
+:root[data-theme='light'] .game-page .primary-action:hover { background: #6366f1; }
+:root[data-theme='light'] .case-pin,
+:root[data-theme='light'] .level-chip b { background: #4f46e5; }
+:root[data-theme='light'] .case-file-label { border-color: #818cf8; background: #eef2ff; color: #312e81; }
+:root[data-theme='light'] .case-story { border-color: #818cf8; background: #eef2ff; color: #334155; }
+:root[data-theme='light'] .level-chip,
+:root[data-theme='light'] .player-chip,
+:root[data-theme='light'] .chip-row button { border-color: #cbd5e1; background: #fff; color: #17212b; }
+:root[data-theme='light'] .chip-row button.is-active { border-color: #4f46e5; background: #4f46e5; color: #fff; }
+:root[data-theme='light'] .level-nav { background: linear-gradient(#f8fafc 80%, transparent); }
+:root[data-theme='light'] .level-heading { border-bottom-color: #cbd5e1; }
+:root[data-theme='light'] .eyebrow,
+:root[data-theme='light'] .catalog-intro .eyebrow,
+:root[data-theme='light'] .case-collection { color: #4338ca; }
+:root[data-theme='light'] .telegram-login .secondary-action { border-color: #047857; background: #047857; color: #fff; }
+:root[data-theme='light'] .telegram-login .secondary-action:hover { background: #059669; }
+:root[data-theme='light'] a:focus-visible,
+:root[data-theme='light'] button:focus-visible { outline: 3px solid #6366f1; outline-offset: 3px; }

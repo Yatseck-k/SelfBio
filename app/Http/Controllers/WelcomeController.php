@@ -15,11 +15,11 @@ class WelcomeController extends Controller
 
     public function index(): JsonResponse
     {
-        $response = $this->welcomeService->getWelcomeInfo()->toArray();
+        $response = $this->welcomeService->getWelcomeInfo()?->toArray();
 
-        return $response ? response()->json($response) : response()->json([
-            'title' => 'Заглушка вместо заголовка',
-            'body' => 'Loading....',
+        return response()->json($response ?? [
+            'title' => __('Welcome!'),
+            'body' => __('Explore my projects, play a detective game, or sign in to view renovation materials.'),
         ]);
     }
 }

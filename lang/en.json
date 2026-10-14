@@ -11,8 +11,17 @@
     "No data to display": "No data to display",
     "Welcome!": "Welcome!",
     "Loading content...": "Loading content...",
+    "Explore my projects, play a detective game, or sign in to view renovation materials.": "Explore my projects, play a detective game, or sign in to view renovation materials.",
     "Home": "Home",
+    "Contacts": "Contacts",
+    "Blog": "Blog",
     "My contacts": "My Contacts",
     "My blog": "My Blog",
-    "Error loading homepage data": "Error loading homepage data"
+    "Error loading homepage data": "Error loading homepage data",
+    "Play game": "Play game",
+    "Renovation materials": "Renovation materials",
+    "Sign in": "Sign in",
+    "Sign in to view renovation materials": "Sign in to view renovation materials",
+    "Password": "Password",
+    "Sign out": "Sign out"
 }

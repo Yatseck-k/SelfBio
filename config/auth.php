@@ -40,6 +40,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'player' => [
+            'driver' => 'session',
+            'provider' => 'players',
+        ],
+        'game_admin' => [
+            'driver' => 'session',
+            'provider' => 'game_admins',
+        ],
     ],
 
     /*
@@ -63,6 +71,14 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+        'players' => [
+            'driver' => 'eloquent',
+            'model' => Whodoku\Models\Player::class,
+        ],
+        'game_admins' => [
+            'driver' => 'eloquent',
+            'model' => Whodoku\Models\User::class,
         ],
 
         // 'users' => [

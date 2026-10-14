@@ -1,8 +1,101 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@source '../js/**/*.vue';
+@source '../js/**/*.js';
+@source '../views/**/*.blade.php';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
 
 :root {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol', 'Noto Color Emoji';
+    font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    color: #f9fafb;
+    background: #030712;
+    --surface: #111827;
+    --surface-raised: #1f2937;
+    --ink: #f9fafb;
+    --muted: #cbd5e1;
+    --line: #374151;
+    --accent: #818cf8;
+    --accent-hover: #a5b4fc;
 }
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, input { font: inherit; }
+a { color: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #a5b4fc; outline-offset: 3px; }
+
+.site-frame {
+    min-height: 100dvh;
+    background: radial-gradient(circle at 48% 5%, rgb(99 102 241 / 13%), transparent 35rem), linear-gradient(135deg, #030712, #111827 58%, #0f172a);
+}
+
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .75rem 1.5rem;
+    min-height: 4.2rem;
+    padding: .7rem max(1rem, calc((100vw - 72rem) / 2));
+    border-bottom: 1px solid rgb(255 255 255 / 10%);
+    background: rgb(3 7 18 / 84%);
+    color: #fff;
+}
+
+.site-brand { font-size: 1.2rem; font-weight: 800; letter-spacing: -.03em; text-decoration: none; }
+.site-nav { display: flex; align-items: center; flex-wrap: wrap; gap: .25rem; }
+.site-nav a, .site-nav button {
+    display: inline-flex;
+    min-height: 2.45rem;
+    align-items: center;
+    padding: .45rem .8rem;
+    border: 0;
+    border-radius: .65rem;
+    background: transparent;
+    color: #d1d5db;
+    font-size: .9rem;
+    font-weight: 650;
+    text-decoration: none;
+    cursor: pointer;
+}
+.site-nav a:hover, .site-nav button:hover, .site-nav .is-active { background: rgb(255 255 255 / 10%); color: #fff; }
+.site-nav .site-nav-action { margin-left: .3rem; background: #047857; color: #fff; }
+.site-nav .site-nav-action:hover, .site-nav .site-nav-action.is-active { background: #059669; color: #fff; }
+
+.site-content { max-width: 72rem; margin: 0 auto; padding: clamp(1.5rem, 5vw, 4rem) clamp(1rem, 4vw, 2rem); }
+.page-intro { max-width: 48rem; margin-bottom: 1.75rem; }
+.eyebrow { margin: 0 0 .75rem; color: #a5b4fc; font-size: .76rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.page-title { margin: 0; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.12; }
+.page-lead { max-width: 40rem; margin: 1rem 0 0; color: var(--muted); line-height: 1.65; }
+.paper-card {
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: 1.25rem;
+    background: linear-gradient(145deg, rgb(31 41 55 / 94%), rgb(17 24 39 / 96%));
+    box-shadow: 0 20px 50px rgb(0 0 0 / 22%), 0 0 38px rgb(99 102 241 / 7%);
+}
+.paper-card + .paper-card { margin-top: 1rem; }
+.text-link { color: #a5b4fc; font-weight: 700; text-underline-offset: .2em; }
+.text-link:hover { color: #c7d2fe; }
+.site-button {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: .7rem 1rem;
+    border: 1px solid #047857;
+    border-radius: .7rem;
+    background: #047857;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+.site-button:hover { background: #059669; }
+.site-button:disabled { opacity: .6; cursor: wait; }
+.site-button-secondary { border-color: #4b5563; background: #374151; color: #fff; }
+.site-button-secondary:hover { background: #4b5563; }
+.site-input { width: 100%; min-height: 44px; padding: .65rem .8rem; border: 1px solid #4b5563; border-radius: .6rem; background: #111827; color: #fff; }
+.site-label { display: block; margin-bottom: .4rem; font-size: .9rem; font-weight: 700; }
+.site-error { color: #fca5a5; }
+@media (max-width: 640px) { .site-header { align-items: flex-start; } .site-nav { width: 100%; } .site-nav a, .site-nav button { padding-inline: .65rem; } }

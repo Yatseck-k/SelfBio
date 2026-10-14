@@ -29,7 +29,7 @@ class BlogService implements BaseServiceInterface
     public function getPosts(Request $request): LengthAwarePaginator
     {
         return Cache::remember(
-            $this->cacheHelper->getCacheKey('blog.index.page', $request->get('page', 1)),
+            $this->cacheHelper->getCacheKey('blog.index.page.'.Cache::get('selfbio.blog.version', '0'), (string) $request->input('page', 1)),
             CacheHelper::TTL_60,
             fn () => $this->model->getPosts()
         );
@@ -40,7 +40,7 @@ class BlogService implements BaseServiceInterface
         $slug = $request->route('slug');
 
         return Cache::remember(
-            $this->cacheHelper->getCacheKey('blog.show', $slug),
+            $this->cacheHelper->getCacheKey('blog.show.'.Cache::get('selfbio.blog.version', '0'), $slug),
             CacheHelper::TTL_60,
             fn () => $this->dto->getDto($this->model->getPost($slug))
         );

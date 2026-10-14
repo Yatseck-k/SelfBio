@@ -1,100 +1,38 @@
 <script setup>
-import {ref, onMounted} from 'vue';
+import {Head} from '@inertiajs/vue3';
 import {trans} from 'laravel-vue-i18n';
+import SiteShell from '../Components/SiteShell.vue';
 
-const contact = ref(null);
-const loading = ref(true);
-const error = ref('');
-
-onMounted(async () => {
-    try {
-        const res = await fetch('/api/contacts');
-        if (!res.ok) throw new Error(trans('Loading error') + ': ' + res.status);
-        contact.value = await res.json();
-    } catch (e) {
-        error.value = e.message;
-    } finally {
-        loading.value = false;
-    }
-});
+defineProps({contact: {type: Object, default: null}, welcome: {type: Object, default: null}, embedded: {type: Boolean, default: false}});
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-900 flex items-center justify-center px-4 py-20">
-        <section class="
-            w-full max-w-lg mx-auto rounded-3xl shadow-2xl relative
-            bg-gradient-to-b from-gray-800/90 to-gray-900/90
-            px-8 py-10 flex flex-col gap-6
-            border border-gray-700
-            ">
-            <div
-                class="absolute -inset-1 rounded-3xl blur-2xl bg-gradient-to-r from-indigo-500/25 via-purple-500/10 to-pink-500/15 opacity-70 pointer-events-none"
-                aria-hidden="true"
-            ></div>
-            <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2 tracking-tight text-center relative z-10">
-                {{ trans('Contact Information') }}
-            </h1>
-
-            <div v-if="loading" class="text-center text-gray-300 text-lg font-medium relative z-10">{{ trans('Loading...') }}</div>
-            <div v-else-if="error" class="text-center text-red-500 font-semibold relative z-10">{{ error }}</div>
-
-            <div v-else-if="contact" class="space-y-6 relative z-10">
-                <ul class="divide-y divide-gray-700">
-                    <li v-if="contact.name" class="py-3 flex items-center gap-4">
-                        <span class="text-gray-400 w-32 shrink-0 flex items-center">👤 {{ trans('Name') }}:</span>
-                        <span class="text-gray-100 font-semibold">{{ contact.name }}</span>
-                    </li>
-                    <li v-if="contact.phone" class="py-3 flex items-center gap-4">
-                        <span class="text-gray-400 w-32 shrink-0 flex items-center">📞 {{ trans('Phone') }}:</span>
-                        <span class="text-gray-100 font-mono">{{ contact.phone }}</span>
-                    </li>
-                    <li v-if="contact.email" class="py-3 flex items-center gap-4">
-                        <span class="text-gray-400 w-32 shrink-0 flex items-center">📧 {{ trans('Email') }}:</span>
-                        <a :href="`mailto:${contact.email}`" class="text-blue-400 hover:underline">
-                            {{ contact.email }}
-                        </a>
-                    </li>
-                    <li v-if="contact.telegram" class="py-3 flex items-center gap-4">
-                        <span class="text-gray-400 w-32 shrink-0 flex items-center">💬 {{ trans('Telegram') }}:</span>
-                        <a
-                            :href="`https://t.me/${contact.telegram.replace('@','')}`"
-                            class="text-blue-400 hover:underline"
-                            target="_blank" rel="noopener"
-                        >
-                            {{ contact.telegram }}
-                        </a>
-                    </li>
-                    <li v-if="contact.github" class="py-3 flex items-center gap-4">
-                        <span class="text-gray-400 w-32 shrink-0 flex items-center">🐙 {{ trans('GitHub') }}:</span>
-                        <a :href="`https://github.com/${contact.github}`" class="text-blue-400 hover:underline"
-                           target="_blank">
-                            {{ contact.github }}
-                        </a>
-                    </li>
-                </ul>
-                <div v-if="contact.socials && contact.socials.length" class="pt-4">
-                    <h3 class="text-lg font-bold text-gray-200 mb-2">{{ trans('Other social networks') }}:</h3>
-                    <ul class="flex flex-col gap-3">
-                        <li v-for="(soc, idx) in contact.socials" :key="idx" class="flex items-center gap-3">
-                            <span class="inline-block bg-gray-700 text-gray-300 rounded px-2 py-1 text-xs uppercase">
-                                {{ soc.type }}
-                            </span>
-                            <a :href="soc.url" target="_blank" rel="noopener"
-                               class="text-blue-400 hover:underline break-all flex items-center gap-1">
-                                🔗 <span>{{ soc.url }}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div v-else class="text-center text-gray-400 relative z-10">{{ trans('No data to display') }}.</div>
+    <Head v-if="!embedded" :title="trans('Contacts')" />
+    <component :is="embedded ? 'div' : SiteShell" v-bind="embedded ? {} : {active: 'contacts'}">
+        <div class="page-intro">
+            <p class="eyebrow">SelfBio / {{ trans('Contacts') }}</p>
+            <h1 class="page-title">{{ embedded && welcome?.title ? welcome.title : trans('Contact Information') }}</h1>
+            <p v-if="embedded && welcome?.body" class="page-lead">{{ welcome.body }}</p>
+        </div>
+        <section class="paper-card" style="max-width: 46rem">
+            <dl v-if="contact" class="contact-list">
+                <div v-if="contact.name"><dt>{{ trans('Name') }}</dt><dd>{{ contact.name }}</dd></div>
+                <div v-if="contact.phone"><dt>{{ trans('Phone') }}</dt><dd><a class="text-link" :href="`tel:${contact.phone}`">{{ contact.phone }}</a></dd></div>
+                <div v-if="contact.email"><dt>{{ trans('Email') }}</dt><dd><a class="text-link" :href="`mailto:${contact.email}`">{{ contact.email }}</a></dd></div>
+                <div v-if="contact.telegram"><dt>{{ trans('Telegram') }}</dt><dd><a class="text-link" :href="`https://t.me/${contact.telegram.replace('@', '')}`" target="_blank" rel="noopener noreferrer">{{ contact.telegram }}</a></dd></div>
+                <div v-if="contact.github"><dt>{{ trans('GitHub') }}</dt><dd><a class="text-link" :href="`https://github.com/${contact.github}`" target="_blank" rel="noopener noreferrer">{{ contact.github }}</a></dd></div>
+                <div v-for="(soc, idx) in contact.socials || []" :key="idx"><dt>{{ soc.type }}</dt><dd><a class="text-link" :href="soc.url" target="_blank" rel="noopener noreferrer">{{ soc.url }}</a></dd></div>
+            </dl>
+            <p v-else style="margin: 0; color: var(--muted)">{{ trans('No data to display') }}.</p>
         </section>
-    </div>
+    </component>
 </template>
 
 <style scoped>
-section {
-    box-shadow: 0 4px 40px #6b21a822;
-}
+.contact-list { margin: 0; }
+.contact-list > div { display: grid; grid-template-columns: minmax(7rem, 11rem) minmax(0, 1fr); gap: .5rem 1rem; padding: .9rem 0; border-bottom: 1px solid var(--line); }
+.contact-list > div:last-child { border-bottom: 0; }
+.contact-list dt { color: var(--muted); font-size: .9rem; }
+.contact-list dd { min-width: 0; margin: 0; font-weight: 650; overflow-wrap: anywhere; }
+@media (max-width: 480px) { .contact-list > div { grid-template-columns: 1fr; gap: .15rem; } }
 </style>
