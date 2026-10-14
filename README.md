@@ -87,17 +87,7 @@ npm ci
 ./vendor/bin/sail npm update
 ```
 
-## Игра и материалы ремонта
 
-- Whodoku работает внутри SelfBio: PHP-код — в `app/Whodoku/`, интерфейс — в `resources/whodoku/`, маршруты — в `routes/whodoku/`, миграции — в `database/whodoku/`. Каталог `/puzzles`, API `/api/puzzles` и админка `/admin` используют одно приложение, PostgreSQL и Redis. Игровые таблицы находятся в схеме PostgreSQL `whodoku`, контент SelfBio — в `public`.
-
-Администраторы обеих прежних панелей объединяются командой `php artisan selfbio:import-admins --apply` после резервного копирования БД. Без `--apply` команда показывает предварительный итог. При совпадении email сохраняется учётная запись и пароль Orchid; роль SelfBio добавляется ей. Старые таблицы `moonshine_users` и `moonshine_user_roles` сохраняются для отката. Вход в раздел ремонта `/login` остаётся отдельным от административного.
-- Единственный `npm ci` и `npm run build` выполняются в корне SelfBio: общий Vite собирает сайт, игру и редактор карты в `public/build/`. Отдельного игрового приложения и контейнеров нет.
-- На новой базе после миграций выполните `./vendor/bin/sail artisan db:seed --class='Whodoku\Database\Seeders\DatabaseSeeder'` и `./vendor/bin/sail artisan puzzles:release starter`, чтобы создать игровой каталог. Для разработки на `localhost` можно включить `TELEGRAM_DEV_LOGIN=true` в `.env`; в production тестовый вход отключён.
-- Каталог ремонта и исходный экспорт находятся в закрытом `storage/app/private/repair-data/{repair,archive}`. SelfBio читает их через `REPAIR_ROOT` и `REPAIR_ARCHIVE_ROOT` (пути **внутри контейнера**). Интерфейс и действия с каталогом обслуживает Laravel после входа. Для импорта ZIP или папки можно использовать `python3 scripts/import-repair.py export|parsed /путь/к/данным` из корня; ZIP до 100 МБ можно загрузить через интерфейс. При переносе старой установки обновите пути `REPAIR_ROOT` и `REPAIR_ARCHIVE_ROOT` в `.env`.
-- Создайте аккаунт SelfBio командой `./vendor/bin/sail artisan user:create user@example.com "Имя"`. Пароль вводится скрыто в терминале. Открытой регистрации нет. Вход — `/login`, каталог — `/repair`. Страницы, API, вложения и действия с каталогом требуют сессию SelfBio.
-- После получения изменений фронтенда SelfBio выполните `npm ci && npm run build`, чтобы обновить файлы Vite в `public/build`.
-- При развёртывании не публикуйте `storage/app/private/` как статические файлы. Игра использует собственную авторизацию через Telegram; её аккаунты отдельны от SelfBio. Старые исходники `game/` и `dataworker/` сохранены локально в игнорируемом `work/backups/` и не нужны для запуска.
 
 ## Лицензия
 MIT
