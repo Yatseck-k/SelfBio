@@ -19,6 +19,15 @@ export default defineConfig({
         i18n(),
         tailwindcss(),
     ],
+    build: {
+        rolldownOptions: {
+            // Without it Rolldown may put shared code (its runtime helpers) into the SelfBio entry chunk, and the game
+            // entry imports that chunk for them. Importing a chunk runs its top level: a second Inertia app started on
+            // every game page («Page not found: ./Pages/PuzzleCatalogPage.vue»). 'strict' keeps entry chunks to their
+            // own exports, so shared code goes to a chunk of its own.
+            preserveEntrySignatures: 'strict',
+        },
+    },
     // `make dev` runs Vite in the node container: listen on all its interfaces, the browser connects through localhost.
     server: {
         host: '0.0.0.0',
