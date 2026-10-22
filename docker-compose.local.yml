@@ -1,0 +1,31 @@
+# Локальная разработка: xdebug, письма в mailpit, БД и Redis доступны с хоста (для IDE).
+services:
+    php:
+        environment:
+            XDEBUG_MODE: '${XDEBUG_MODE:-off}'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+
+    # Локально бот не запускается сам: с тем же токеном он отбирал бы обновления у бота на проде (409 от Telegram).
+    # Нужен для отладки входа — `docker compose --profile bot up -d telegram-bot` с токеном своего тестового бота.
+    telegram-bot:
+        profiles: ['bot']
+        environment:
+            XDEBUG_MODE: 'off'
+
+    pgsql:
+        ports:
+            - '127.0.0.1:${FORWARD_DB_PORT:-5432}:5432'
+
+    redis:
+        ports:
+            - '127.0.0.1:${FORWARD_REDIS_PORT:-6379}:6379'
+
+    mailpit:
+        image: axllent/mailpit:v1.29.0
+        restart: unless-stopped
+        ports:
+            - '127.0.0.1:${FORWARD_MAILPIT_PORT:-1025}:1025'
+            - '127.0.0.1:${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+        networks:
+            - backend

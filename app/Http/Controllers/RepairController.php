@@ -15,13 +15,23 @@ class RepairController extends Controller
         $html = file_get_contents(resource_path('repair/index.html'));
         $styles = file_get_contents(resource_path('css/repair.css'));
         $html = str_replace('</head>', '<meta name="csrf-token" content="'.e(csrf_token()).'"><style>'.$styles.'</style></head>', $html);
-        $html = str_replace('<body>', '<body><div class="selfbio-header"><a class="selfbio-brand" href="/">SelfBio</a><nav aria-label="Навигация сайта"><a href="/#contacts">Контакты</a><a href="/#blog">Блог</a><a href="/puzzles">Whodoku</a><a class="active" href="/repair" aria-current="page">Ремонт</a><form method="post" action="/logout"><input type="hidden" name="_token" value="'.e(csrf_token()).'"><button type="submit">Выйти</button></form></nav></div>', $html);
+        $html = str_replace('<body>', '<body>'.$this->accountHeader('repair'), $html);
 
         return response($html, 200, [
             'Content-Type' => 'text/html; charset=UTF-8',
             'Cache-Control' => 'private, no-store',
             'X-Content-Type-Options' => 'nosniff',
         ]);
+    }
+
+    /** The bar of the personal account: the site, the tabs of the account, the way out. */
+    private function accountHeader(string $active): string
+    {
+        $tabs = collect(config('account.tabs'))->map(fn (array $tab): string => '<a'.($tab['key'] === $active ? ' class="active" aria-current="page"' : '').' href="'.e($tab['path']).'">'.e($tab['title']).'</a>')->implode('');
+
+        return '<div class="selfbio-header"><a class="selfbio-brand" href="/">'.e(config('app.name')).'</a>'
+            .'<nav class="account-tabs" aria-label="Личный кабинет"><span class="account-label">Личный кабинет</span>'.$tabs.'</nav>'
+            .'<nav aria-label="Сайт"><a href="/">На сайт</a><form method="post" action="/logout"><input type="hidden" name="_token" value="'.e(csrf_token()).'"><button type="submit">Выйти</button></form></nav></div>';
     }
 
     public function catalog(): BinaryFileResponse

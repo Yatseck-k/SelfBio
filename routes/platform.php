@@ -2,10 +2,15 @@
 
 declare(strict_types=1);
 
+use App\Orchid\Screens\Account\AccountUserEditScreen;
+use App\Orchid\Screens\Account\AccountUserListScreen;
+use App\Orchid\Screens\Account\RepairDataScreen;
 use App\Orchid\Screens\BlogPostEditScreen;
 use App\Orchid\Screens\BlogPostListScreen;
+use App\Orchid\Screens\CardSettingsScreen;
 use App\Orchid\Screens\ContactInfoScreen;
-use App\Orchid\Screens\WelcomeScreen;
+use App\Orchid\Screens\GameSettingsScreen;
+use App\Orchid\Screens\SiteSettingsScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 use Whodoku\Orchid\Screens\Appearance\AppearanceScreen;
@@ -43,7 +48,15 @@ Route::screen('selfbio/blog/create', BlogPostEditScreen::class)->name('platform.
 Route::screen('selfbio/blog/{post}/edit', BlogPostEditScreen::class)->name('platform.selfbio.blog.edit');
 Route::screen('selfbio/blog', BlogPostListScreen::class)->name('platform.selfbio.blog');
 Route::screen('selfbio/contacts', ContactInfoScreen::class)->name('platform.selfbio.contacts');
-Route::screen('selfbio/welcome', WelcomeScreen::class)->name('platform.selfbio.welcome');
+Route::screen('selfbio/settings', SiteSettingsScreen::class)->name('platform.selfbio.settings');
+Route::screen('selfbio/card-settings', CardSettingsScreen::class)->name('platform.selfbio.card');
+Route::screen('selfbio/game-settings', GameSettingsScreen::class)->name('platform.selfbio.game');
+
+// The personal account of the site: its users and the «Ремонт» tab.
+Route::screen('account/users/create', AccountUserEditScreen::class)->name('platform.account.users.create');
+Route::screen('account/users/{user}/edit', AccountUserEditScreen::class)->name('platform.account.users.edit');
+Route::screen('account/users', AccountUserListScreen::class)->name('platform.account.users');
+Route::screen('account/repair', RepairDataScreen::class)->name('platform.account.repair');
 
 Route::screen('/main', PlatformScreen::class)
     ->name('platform.main');

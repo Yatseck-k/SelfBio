@@ -19,4 +19,11 @@ export default defineConfig({
         i18n(),
         tailwindcss(),
     ],
+    // `make dev` runs Vite in the node container: listen on all its interfaces, the browser connects through localhost.
+    server: {
+        host: '0.0.0.0',
+        port: Number(process.env.VITE_PORT ?? 5173),
+        strictPort: true,
+        hmr: { host: 'localhost' },
+    },
 });

@@ -42,26 +42,18 @@ class UnifiedAdminTest extends TestCase
             'platform.selfbio.blog.edit' => true,
             'platform.selfbio.contacts.view' => true,
             'platform.selfbio.contacts.edit' => true,
-            'platform.selfbio.welcome.view' => true,
-            'platform.selfbio.welcome.edit' => true,
         ]);
         $this->assertTrue($admin->hasAccess('platform.selfbio.blog.view'));
         $this->actingAs($admin, 'game_admin');
 
         $this->get('/admin/selfbio/blog')->assertOk();
         $this->get('/admin/selfbio/contacts')->assertOk();
-        $this->get('/admin/selfbio/welcome')->assertOk();
         $this->get('/admin/main')->assertOk()->assertSee('SelfBio')->assertDontSee('Предметы на карте');
 
         $this->post('/admin/selfbio/contacts/save', ['contact' => [
             'name' => 'SelfBio', 'email' => 'contact@example.test', 'socials' => '[]',
         ]])->assertRedirect('/admin/selfbio/contacts');
         $this->assertDatabaseHas('contact_info', ['email' => 'contact@example.test'], 'pgsql');
-
-        $this->post('/admin/selfbio/welcome/save', ['welcome' => [
-            'title' => 'Добро пожаловать', 'body' => 'Текст страницы',
-        ]])->assertRedirect('/admin/selfbio/welcome');
-        $this->assertDatabaseHas('welcome', ['title' => 'Добро пожаловать'], 'pgsql');
 
         $this->post('/admin/selfbio/blog/create/save', ['post' => [
             'title' => 'Статья', 'slug' => 'article', 'preview' => 'Анонс',
@@ -82,7 +74,6 @@ class UnifiedAdminTest extends TestCase
         $this->assertDatabaseHas('blog_posts', ['id' => $postId, 'title' => 'Обновлённая статья'], 'pgsql');
 
         $this->getJson('/api/contacts')->assertOk()->assertJsonPath('email', 'contact@example.test');
-        $this->getJson('/api/welcome')->assertOk()->assertJsonPath('title', 'Добро пожаловать');
         $this->getJson('/api/blog/article')->assertOk()->assertJsonPath('title', 'Обновлённая статья');
     }
 
@@ -106,6 +97,24 @@ class UnifiedAdminTest extends TestCase
         $this->assertNotNull($role);
         $this->assertEquals(1, $target->table('role_users')->where('user_id', $admin->id)->where('role_id', $role->id)->count());
         $this->assertSame($password, $target->table('users')->where('id', $admin->id)->value('password'));
+    }
+
+    public function test_moonshine_import_grants_the_account_section_and_drops_the_welcome_keys(): void
+    {
+        $target = DB::connection('whodoku');
+        // The game database is not rolled back between tests: the role may be left by another test.
+        $target->table('roles')->updateOrInsert(['slug' => 'selfbio-admin'], [
+            'name' => 'SelfBio admin',
+            'permissions' => json_encode(['platform.selfbio.welcome.edit' => true], JSON_THROW_ON_ERROR),
+            'created_at' => now(), 'updated_at' => now(),
+        ]);
+
+        $this->artisan('selfbio:import-admins', ['--apply' => true])->assertExitCode(0);
+
+        $permissions = json_decode((string) $target->table('roles')->where('slug', 'selfbio-admin')->value('permissions'), true);
+        $this->assertTrue($permissions['platform.selfbio.account.view']);
+        $this->assertTrue($permissions['platform.selfbio.account.edit']);
+        $this->assertArrayNotHasKey('platform.selfbio.welcome.edit', $permissions);
     }
 
     public function test_game_admin_screens_remain_available(): void

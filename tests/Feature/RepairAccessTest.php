@@ -57,9 +57,9 @@ class RepairAccessTest extends TestCase
     {
         $this->actingAs(User::factory()->create());
 
-        $this->get('/repair')->assertOk()->assertHeader('Cache-Control', 'no-store, private');
+        $this->get('/account/repair')->assertOk()->assertHeader('Cache-Control', 'no-store, private');
         $this->get('/api/catalog')->assertOk()->assertHeader('Cache-Control', 'no-store, private');
-        $this->get('/Ремонт/locales/ru.json')->assertOk();
+        $this->get('/Ремонт/locales/ru.json')->assertOk()->assertHeader('X-Robots-Tag', 'noindex, nofollow');
         $this->get('/archive/messages.html')->assertOk();
         $this->get(self::ATTACHMENT)->assertOk();
         $this->postJson('/api/status', ['message_id' => 1, 'status' => 'inactive'])->assertOk();

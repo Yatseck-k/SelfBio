@@ -21,7 +21,7 @@ class BlogPostListLayout extends Table
             TD::make('title', 'Название')->render(fn (BlogPost $post) => Link::make($post->title)
                 ->route('platform.selfbio.blog.edit', ['post' => $post->id])),
             TD::make('slug', 'Slug'),
-            TD::make('published_at', 'Опубликовано')->render(fn (BlogPost $post) => $post->published_at?->format('d.m.Y H:i') ?? '—'),
+            TD::make('published_at', 'Опубликовано')->render(fn (BlogPost $post) => $post->published_at?->copy()->timezone(config('app.display_timezone'))->format('d.m.Y H:i') ?? '—'),
             TD::make('actions', '')->render(fn (BlogPost $post) => Button::make('Удалить')
                 ->icon('bs.trash3')
                 ->confirm('Удалить запись «'.$post->title.'»?')

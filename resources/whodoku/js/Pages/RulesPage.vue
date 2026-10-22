@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useBrand } from '../composables/useBrand';
 import MiniMap from '../Components/MiniMap.vue';
 import TutorialCase from '../Components/TutorialCase.vue';
 import { CRIME_FINDS, CRIME_RULE, puzzleTypeLabel } from '../composables/puzzleTypes';
+
+const brand = useBrand();
 
 // Cell code: room letter, icon (c armchair, p plant, r rug) and mark (+ suits, - does not, capital letter = guest).
 const terms: { title: string; text: string; maps: { rows: string[][]; caption: string; windows?: { row: number; col: number; side: 'north' | 'south' | 'west' | 'east' }[] }[] }[] = [
@@ -66,7 +69,7 @@ const terms: { title: string; text: string; maps: { rows: string[][]; caption: s
 <template>
     <main class="public-page rules-page">
         <header class="public-header">
-            <a href="/" class="site-home-link">SelfBio</a>
+            <a href="/" class="site-home-link">{{ brand }}</a>
             <a href="/puzzles" class="brand">Whodoku</a>
             <a href="/puzzles" class="quiet-link">К делам</a>
         </header>

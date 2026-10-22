@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useBrand } from '../composables/useBrand';
 import { computed, onMounted, ref } from 'vue';
 import BuyHintsDialog from '../Components/BuyHintsDialog.vue';
 import PlayerBar from '../Components/PlayerBar.vue';
@@ -6,6 +7,8 @@ import TelegramLogin from '../Components/TelegramLogin.vue';
 import { loadPlayer, playerState } from '../composables/usePlayer';
 import { loadOffer } from '../composables/useShop';
 import type { ShopOffer } from '../types/puzzle';
+
+const brand = useBrand();
 
 const offer = ref<ShopOffer | null>(null);
 const loading = ref(true);
@@ -27,9 +30,9 @@ onMounted(load);
 <template>
     <main class="public-page shop-page">
         <header class="public-header">
-            <a href="/" class="site-home-link">SelfBio</a>
+            <a href="/" class="site-home-link">{{ brand }}</a>
             <a href="/puzzles" class="brand">Whodoku</a>
-            <span class="header-links"><a href="/puzzles" class="quiet-link">К делам</a> <a href="/rating" class="quiet-link">Рейтинг</a> <a href="/rules" class="quiet-link">Правила</a> <PlayerBar /></span>
+            <span class="header-links"><a href="/puzzles" class="quiet-link">К игре</a> <a href="/rating" class="quiet-link">Рейтинг</a> <a href="/rules" class="quiet-link">Правила</a> <PlayerBar /></span>
         </header>
 
         <section class="catalog-intro">

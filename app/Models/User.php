@@ -6,18 +6,22 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Interfaces\BaseModelInterface;
+use App\Notifications\ResetPasswordNotification;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Attributes\Connection;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Orchid\Screen\AsSource;
 
 #[Fillable([
     'name',
     'email',
     'password',
 ])]
+#[Connection('pgsql')]
 #[Hidden([
     'password',
     'remember_token',
@@ -25,7 +29,13 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable implements BaseModelInterface
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use AsSource, HasFactory, Notifiable;
+
+    #[\Override]
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
 
     public function getClassName(): string
     {

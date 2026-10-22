@@ -4,11 +4,11 @@ import type { PlayerProfile } from '../types/puzzle';
 interface PlayerState {
     loaded: boolean;
     player: PlayerProfile | null;
-    login: { bot_username: string | null; dev: boolean };
+    login: { bot_username: string | null; bot: boolean; dev: boolean };
 }
 
 /** The signed-in player is shared by every page; guests simply have no player. */
-export const playerState = reactive<PlayerState>({ loaded: false, player: null, login: { bot_username: null, dev: false } });
+export const playerState = reactive<PlayerState>({ loaded: false, player: null, login: { bot_username: null, bot: false, dev: false } });
 
 /** Laravel puts the CSRF token into the XSRF-TOKEN cookie; sending it back proves the request comes from our pages. */
 export function apiHeaders(): Record<string, string> {
@@ -39,22 +39,51 @@ export async function loadPlayer(force = false): Promise<void> {
     }
 }
 
+/** A request that never reached the server (offline, connection dropped) comes back as status 0 instead of throwing. */
 async function post(path: string, body: unknown = {}): Promise<{ ok: boolean; status: number; data: Record<string, unknown> }> {
-    const response = await globalThis.fetch(path, { method: 'POST', headers: apiHeaders(), body: JSON.stringify(body) });
+    let response: Response;
+    try {
+        response = await globalThis.fetch(path, { method: 'POST', headers: apiHeaders(), body: JSON.stringify(body) });
+    } catch {
+        return { ok: false, status: 0, data: {} };
+    }
     const data = await response.json().catch(() => ({})) as Record<string, unknown>;
 
     return { ok: response.ok, status: response.status, data };
 }
 
-/** @returns an error text, or null when the player is signed in */
-export async function signInWithTelegram(user: Record<string, unknown>): Promise<string | null> {
-    const result = await post('/player/login/telegram', user);
+export interface BotLoginRequest {
+    code: string;
+    secret: string;
+    link: string;
+    expires_in: number;
+}
+
+/** Sign-in through the bot, step 1. @returns the link that opens the bot, or an error text */
+export async function startBotLogin(): Promise<BotLoginRequest | string> {
+    const result = await post('/player/login/bot');
+    if (!result.ok) {
+        return String(result.data.message ?? 'Вход через Telegram недоступен.');
+    }
+
+    return result.data as unknown as BotLoginRequest;
+}
+
+/**
+ * Step 2: asks whether the player has pressed Start in the bot.
+ * A lost connection or a server that is briefly down (503 while a deploy runs) counts as «still waiting»: the next poll retries.
+ */
+export async function checkBotLogin(request: BotLoginRequest): Promise<'pending' | 'signed-in' | string> {
+    const result = await post('/player/login/bot/check', { code: request.code, secret: request.secret });
+    if (result.status === 202 || result.status === 0 || result.status >= 500) {
+        return 'pending';
+    }
     if (!result.ok) {
         return String(result.data.message ?? 'Не удалось войти через Telegram.');
     }
     playerState.player = result.data.player as PlayerProfile;
 
-    return null;
+    return 'signed-in';
 }
 
 export async function signInForTesting(): Promise<string | null> {

@@ -16,6 +16,12 @@ return [
     'name' => env('APP_NAME', 'Laravel'),
 
     /*
+    | The name from the environment, kept apart from `name`: the name saved in the admin panel is put over `name` at run time
+    | (and may be baked into a cached config), so a reset must go back to this one.
+    */
+    'default_name' => env('APP_NAME', 'Laravel'),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
@@ -66,6 +72,11 @@ return [
     */
 
     'timezone' => 'UTC',
+
+    /*
+    | The time zone the editors of the site think in: the admin forms show and take the publication time in it.
+    */
+    'display_timezone' => env('APP_DISPLAY_TIMEZONE', 'Europe/Moscow'),
 
     /*
     |--------------------------------------------------------------------------

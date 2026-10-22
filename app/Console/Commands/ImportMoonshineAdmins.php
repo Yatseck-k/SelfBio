@@ -19,9 +19,14 @@ class ImportMoonshineAdmins extends Command
         'platform.selfbio.blog.edit' => true,
         'platform.selfbio.contacts.view' => true,
         'platform.selfbio.contacts.edit' => true,
-        'platform.selfbio.welcome.view' => true,
-        'platform.selfbio.welcome.edit' => true,
+        'platform.selfbio.settings.view' => true,
+        'platform.selfbio.settings.edit' => true,
+        'platform.selfbio.account.view' => true,
+        'platform.selfbio.account.edit' => true,
     ];
+
+    /** The welcome screen is gone (its text lives in the page texts now): the role must not keep its keys. */
+    private const array REMOVED_PERMISSIONS = ['platform.selfbio.welcome.view', 'platform.selfbio.welcome.edit'];
 
     public function handle(): int
     {
@@ -55,7 +60,7 @@ class ImportMoonshineAdmins extends Command
             ]);
 
             if ($role) {
-                $permissions = json_decode((string) $role->permissions, true) ?: [];
+                $permissions = array_diff_key(json_decode((string) $role->permissions, true) ?: [], array_flip(self::REMOVED_PERMISSIONS));
                 $target->table('roles')->where('id', $roleId)->update([
                     'permissions' => json_encode($permissions + self::PERMISSIONS, JSON_THROW_ON_ERROR),
                     'updated_at' => now(),

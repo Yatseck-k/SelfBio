@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useBrand } from '../composables/useBrand';
 import { computed, onMounted, ref } from 'vue';
 import PlayerBar from '../Components/PlayerBar.vue';
 import StorySpeaker from '../Components/StorySpeaker.vue';
@@ -6,6 +7,8 @@ import TelegramLogin from '../Components/TelegramLogin.vue';
 import { apiHeaders, loadPlayer } from '../composables/usePlayer';
 import { plural } from '../composables/plural';
 import type { PlayerRank, StoryAct, StoryChapter } from '../types/puzzle';
+
+const brand = useBrand();
 
 const chapters = ref<StoryChapter[]>([]);
 const acts = ref<StoryAct[]>([]);
@@ -63,9 +66,9 @@ const stateLabel: Record<StoryChapter['state'], string> = { locked: 'Закры�
 <template>
     <main class="public-page story-page">
         <header class="public-header">
-            <a href="/" class="site-home-link">SelfBio</a>
+            <a href="/" class="site-home-link">{{ brand }}</a>
             <a href="/puzzles" class="brand"><span aria-hidden="true">←</span> К делам</a>
-            <span class="header-links"><a href="/rating" class="quiet-link">Рейтинг</a> <a href="/shop" class="quiet-link">Магазин</a> <a href="/rules" class="quiet-link">Правила</a> <PlayerBar /></span>
+            <span class="header-links"><a href="/puzzles" class="quiet-link">К игре</a> <a href="/rating" class="quiet-link">Рейтинг</a> <a href="/shop" class="quiet-link">Магазин</a> <a href="/rules" class="quiet-link">Правила</a> <PlayerBar /></span>
         </header>
         <section class="catalog-intro">
             <p class="eyebrow">Сюжет</p>

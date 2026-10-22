@@ -2,11 +2,25 @@
 
 ## Стек
 
-- **Laravel 13**, PHP 8.5
+- **Laravel 13**, PHP 8.5 (php-fpm)
 - **Orchid** (единая админка SelfBio и Whodoku)
-- **PostgreSQL**, **Redis**, **RabbitMQ**, **Mailpit** (Docker/Sail)
+- **PostgreSQL**, **Redis** — в Docker, **Mailpit** — локально
 - **Vite + Vue 3** (SPA, компоненты)
-- **Livewire** v4, **Inertia**, сессионный вход Laravel и **Sanctum**, **Pusher/Soketi** (Websockets)
+- **Livewire** v4, **Inertia**, сессионный вход Laravel и **Sanctum**
+
+## Docker
+
+| Сервис | Что делает |
+|---|---|
+| `nginx` | отдаёт `public/` (сборку Vite, `storage`) и передаёт запросы в php-fpm; порт `APP_BIND:APP_PORT` (по умолчанию `127.0.0.1:8080`) |
+| `php` | php-fpm с приложением (`docker/php-fpm`, цели `local` с xdebug и `prod`) |
+| `telegram-bot` | тот же образ, `php artisan telegram:poll` — вход через бота |
+| `pgsql`, `redis` | БД, кэш, сессии, очередь |
+| `mailpit` | локально: ловушка писем, http://localhost:8025 |
+| `node` | по требованию: `make build`, `make dev`, `make npm CMD=…` |
+
+Какие compose-файлы собираются, задаёт `COMPOSE_FILE` в `.env`: локально `docker-compose.yml:docker-compose.local.yml`, на проде только `docker-compose.yml` и `PHP_TARGET=prod`.
+Локально бот не запускается сам (с тем же токеном он отбирал бы обновления у прода): `docker compose --profile bot up -d telegram-bot` с токеном тестового бота.
 
 ## Быстрый старт
 
@@ -17,77 +31,59 @@ git clone https://github.com/Yatseck-k/SelfBio.git
 cd SelfBio
 ```
 
-### 2. Запусти dev-инфраструктуру через Sail
+### 2. Подними контейнеры
 
 ```bash
-cp .env.example .env
-docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/app" -w /app composer:2 install --ignore-platform-req=php+ --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-sockets
-npm ci
-
-./vendor/bin/sail up -d 
+cp .env.example .env        # при другом UID/GID поправь PUID и PGID (id -u, id -g)
+make up                     # первый раз соберёт образ PHP
+make composer CMD=install
+make npm CMD=ci
 ```
-
-При другом UID/GID пользователя укажите свои `WWWUSER` и `WWWGROUP` в `.env` до сборки образа.
 
 ### 3. Прогрей миграции и линкни сторидж
 
 ```bash
-./vendor/bin/sail artisan key:generate
-./vendor/bin/sail artisan migrate
-./vendor/bin/sail artisan storage:link
-./vendor/bin/sail artisan db:seed
+docker compose exec php php artisan key:generate
+docker compose exec php php artisan migrate
+docker compose exec php php artisan storage:link
+docker compose exec php php artisan db:seed
 ```
 
 ### 4. Запусти vite для фронтенда
 
 ```bash
-./vendor/bin/sail npm run dev
+make dev
 ```
 
 ### 5. Создай пользователя для админки
 
 ```bash
-./vendor/bin/sail artisan orchid:admin
+docker compose exec php php artisan orchid:admin
 ```
 
 Открой http://localhost:8080/admin — единую админку SelfBio и Whodoku на Orchid. Если переходишь с MoonShine, выполни `selfbio:import-admins --apply` после создания резервной копии БД.
 
+### 6. Название сайта и время публикации
+
+Название сайта (шапки, заголовки вкладок, админка, каталог ремонта) меняется в админке: **Настройки сайта** (`/admin/selfbio/settings`, права `platform.selfbio.settings.view/edit`). Оно сохраняется в базе и действует сразу на всех страницах, пересборка не нужна; кнопка «Вернуть название по умолчанию» возвращает `APP_NAME` из окружения. То же умеет команда: `php artisan site:rename "Моё название"` (`--show`, `--reset`).
+
+Время публикации записей блога в админке вводится по часовому поясу сайта (`APP_DISPLAY_TIMEZONE`, по умолчанию `Europe/Moscow`), в базе хранится UTC.
+
 ## Полезные команды
 
 ```bash
-# Запуск всех контейнеров (в фоне)
-./vendor/bin/sail up -d
-
-# Остановить контейнеры
-./vendor/bin/sail down
-
-# Перезапуск приложения
-./vendor/bin/sail restart
-
-# Проверить логи Laravel
-./vendor/bin/sail artisan pail
-
-# PHP Artisan команду выполнить
-./vendor/bin/sail artisan route:list
-
-# Открыть bash внутри контейнера
-./vendor/bin/sail shell
-
-# Тесты
-./vendor/bin/sail artisan test
-
-# Запустить vite/frontend-сервер
-./vendor/bin/sail npm run dev
-
-# Проверить состояние очередей (Horizon)
-./vendor/bin/sail artisan horizon
-
-# Обновить зависимости
-./vendor/bin/sail composer update
-./vendor/bin/sail npm update
+make up / make down / make restart   # контейнеры
+make ps / make logs                  # состояние и логи
+make shell                           # bash в контейнере PHP
+make test                            # PHPUnit
+make pint / make pint-test           # стиль кода (только изменённые файлы / проверка)
+make rector / make rector-fix
+make build / make dev                # фронтенд: сборка / Vite
+make composer CMD="update"
+make npm CMD="update"
+make build-images                    # пересобрать образ PHP (после правок docker/php-fpm)
+docker compose exec php php artisan pail   # живой лог Laravel
 ```
-
-
 
 ## Лицензия
 MIT

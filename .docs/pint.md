@@ -2,22 +2,22 @@
 
 - Проверить только нарушения (без правок):
   ```bash
-  sail pint --test
+  docker compose exec php vendor/bin/pint --test
   ```
 - Отформатировать только изменённые файлы:
   ```bash
-  sail pint --dirty
+  docker compose exec php vendor/bin/pint --dirty
   ```
 - Вывести подробный отчёт:
   ```bash
-  sail pint -v
+  docker compose exec php vendor/bin/pint -v
   ```
 - Отформатировать выбранную папку или файл:
   ```bash
-  sail pint app/Http/Controllers
-  sail pint app/Http/Controllers/SomeController.php
+  docker compose exec php vendor/bin/pint app/Http/Controllers
+  docker compose exec php vendor/bin/pint app/Http/Controllers/SomeController.php
   ```
 - Форматировать весь проект:
   ```bash
-  sail pint
+  docker compose exec php vendor/bin/pint
   ```

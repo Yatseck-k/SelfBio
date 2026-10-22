@@ -1,25 +1,68 @@
 @php($user = auth()->user())
 @php($can = fn (string $permission) => $user?->hasAccess($permission) ?? false)
 
-@if ($can('platform.selfbio.blog.view') || $can('platform.selfbio.contacts.view') || $can('platform.selfbio.welcome.view'))
-    <div class="bg-white rounded shadow-sm p-4 mb-3">
-        <h5>SelfBio</h5>
-        <p>Управление публичным содержимым сайта:</p>
-        <ul class="mb-0">
-            @if ($can('platform.selfbio.blog.view'))
-                <li><a href="{{ route('platform.selfbio.blog') }}">Блог</a> — записи и обложки.</li>
-            @endif
-            @if ($can('platform.selfbio.contacts.view'))
-                <li><a href="{{ route('platform.selfbio.contacts') }}">Контакты</a> — данные на стартовой странице.</li>
-            @endif
-            @if ($can('platform.selfbio.welcome.view'))
-                <li><a href="{{ route('platform.selfbio.welcome') }}">Приветствие</a> — текст в API сайта.</li>
-            @endif
-        </ul>
-    </div>
-@endif
+@php($cards = [
+    [
+        'title' => 'Сайт-визитка',
+        'stat' => $stats['posts'] === null ? null : $stats['posts'].' '.trans_choice('{1} запись|[2,4] записи|[5,*] записей', $stats['posts']).' в блоге',
+        'links' => [
+            ['Блог', 'platform.selfbio.blog', 'platform.selfbio.blog.view'],
+            ['Контакты', 'platform.selfbio.contacts', 'platform.selfbio.contacts.view'],
+            ['Тексты страниц', 'platform.selfbio.card', 'platform.selfbio.settings.view'],
+        ],
+    ],
+    [
+        'title' => 'Игра Whodoku',
+        'stat' => $stats['puzzles'] === null ? null : $stats['puzzles'].' дел опубликовано'.($stats['players'] === null ? '' : ', '.$stats['players'].' игроков'),
+        'links' => [
+            ['Дела', 'platform.puzzles', 'platform.puzzles.view'],
+            ['Сгенерировать дело', 'platform.puzzles.generate', 'platform.puzzles.generate'],
+            ['Выпуск дел', 'platform.release', 'platform.puzzles.generate'],
+            ['Игроки', 'platform.players', 'platform.puzzles.players'],
+        ],
+    ],
+    [
+        'title' => 'Личный кабинет',
+        'stat' => $stats['account'] === null ? null : $stats['account'].' '.trans_choice('{1} пользователь|[2,4] пользователя|[5,*] пользователей', $stats['account']),
+        'links' => [
+            ['Пользователи', 'platform.account.users', 'platform.selfbio.account.view'],
+            ['Ремонт', 'platform.account.repair', 'platform.selfbio.account.view'],
+        ],
+    ],
+    [
+        'title' => 'Сайт',
+        'stat' => 'Название: '.config('app.name'),
+        'links' => [
+            ['Настройки сайта', 'platform.selfbio.settings', 'platform.selfbio.settings.view'],
+        ],
+    ],
+])
+
+<div class="row g-3 mb-3">
+    @foreach ($cards as $card)
+        @php($links = array_values(array_filter($card['links'], fn (array $link): bool => $can($link[2]))))
+        @if ($links !== [])
+            <div class="col-md-6 col-xl-3">
+                <div class="bg-white rounded shadow-sm p-4 h-100">
+                    <h5 class="mb-1">{{ $card['title'] }}</h5>
+                    @if ($card['stat'])
+                        <p class="text-muted small mb-3">{{ $card['stat'] }}</p>
+                    @endif
+                    <ul class="list-unstyled mb-0">
+                        @foreach ($links as $link)
+                            <li class="mb-1"><a href="{{ route($link[1]) }}">{{ $link[0] }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+    @endforeach
+</div>
 
 @if ($can('platform.puzzles.view') || $can('platform.puzzles.generate') || $can('platform.puzzles.objects'))
+<details class="bg-white rounded shadow-sm p-3 mb-3">
+    <summary class="h5 mb-0" style="cursor: pointer">Справка по игре Whodoku</summary>
+    <div class="mt-3">
 <div class="bg-white rounded shadow-sm p-4 mb-3">
     <h5>Что можно делать в админке</h5>
     <p class="mb-0">
@@ -270,4 +313,6 @@
         <li>Первого администратора создаёт команда <code>make admin</code> на сервере.</li>
     </ul>
 </div>
+    </div>
+</details>
 @endif

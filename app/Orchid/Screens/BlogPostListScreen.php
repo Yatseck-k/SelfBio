@@ -22,7 +22,7 @@ class BlogPostListScreen extends Screen
 
     public function name(): ?string
     {
-        return 'Блог SelfBio';
+        return 'Блог '.config('app.name');
     }
 
     public function permission(): ?iterable

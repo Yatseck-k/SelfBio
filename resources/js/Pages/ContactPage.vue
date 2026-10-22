@@ -1,18 +1,19 @@
 <script setup>
 import {Head} from '@inertiajs/vue3';
 import {trans} from 'laravel-vue-i18n';
+import Breadcrumbs from '../Components/Breadcrumbs.vue';
 import SiteShell from '../Components/SiteShell.vue';
 
-defineProps({contact: {type: Object, default: null}, welcome: {type: Object, default: null}, embedded: {type: Boolean, default: false}});
+defineProps({contact: {type: Object, default: null}, embedded: {type: Boolean, default: false}});
 </script>
 
 <template>
     <Head v-if="!embedded" :title="trans('Contacts')" />
     <component :is="embedded ? 'div' : SiteShell" v-bind="embedded ? {} : {active: 'contacts'}">
         <div class="page-intro">
-            <p class="eyebrow">SelfBio / {{ trans('Contacts') }}</p>
-            <h1 class="page-title">{{ embedded && welcome?.title ? welcome.title : trans('Contact Information') }}</h1>
-            <p v-if="embedded && welcome?.body" class="page-lead">{{ welcome.body }}</p>
+            <Breadcrumbs :items="[{label: trans('Contacts')}]" />
+            <h1 class="page-title">{{ $page.props.pageTexts?.contacts?.title || trans('Contact Information') }}</h1>
+            <p v-if="$page.props.pageTexts?.contacts?.lead" class="page-lead">{{ $page.props.pageTexts.contacts.lead }}</p>
         </div>
         <section class="paper-card" style="max-width: 46rem">
             <dl v-if="contact" class="contact-list">

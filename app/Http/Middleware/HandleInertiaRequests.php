@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Support\PageTexts;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -48,6 +49,12 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'signedIn' => $request->user() !== null,
+            // The name of the site (APP_NAME, changed by `php artisan site:rename`): pages never spell it out.
+            'brand' => config('app.name'),
+            // One-time message after a redirect («Пароль изменён»).
+            'status' => fn () => $request->session()->get('status'),
+            // The headings and explanations of the pages that the editors change in the admin panel.
+            'pageTexts' => PageTexts::all(),
         ];
     }
 }

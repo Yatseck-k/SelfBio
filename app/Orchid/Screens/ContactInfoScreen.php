@@ -22,12 +22,16 @@ class ContactInfoScreen extends Screen
     {
         $contact = ContactInfo::query()->first();
 
-        return ['contact' => $contact?->toArray() ?? []];
+        // The textarea shows the social networks as JSON text: an array here would break the field.
+        return ['contact' => [
+            ...($contact?->toArray() ?? []),
+            'socials' => json_encode($contact?->socials ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+        ]];
     }
 
     public function name(): ?string
     {
-        return 'Контакты SelfBio';
+        return 'Контакты '.config('app.name');
     }
 
     public function permission(): ?iterable
@@ -49,8 +53,7 @@ class ContactInfoScreen extends Screen
             Input::make('contact.email')->title('Email')->type('email')->required(),
             Input::make('contact.telegram')->title('Telegram'),
             Input::make('contact.github')->title('GitHub'),
-            TextArea::make('contact.socials')->title('Социальные сети (JSON)')->rows(6)
-                ->value(json_encode((array) (ContactInfo::query()->first()?->socials ?? []), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)),
+            TextArea::make('contact.socials')->title('Социальные сети (JSON)')->rows(6),
         ])];
     }
 

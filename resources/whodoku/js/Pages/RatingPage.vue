@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useBrand } from '../composables/useBrand';
 import { onMounted, ref, watch } from 'vue';
 import PersonAvatar from '../Components/PersonAvatar.vue';
 import PlayerBar from '../Components/PlayerBar.vue';
 import { apiHeaders, loadPlayer } from '../composables/usePlayer';
 import type { LeaderboardRow } from '../types/puzzle';
+
+const brand = useBrand();
 
 const period = ref<'week' | 'all'>('all');
 const rows = ref<LeaderboardRow[]>([]);
@@ -34,9 +37,9 @@ watch(period, load);
 <template>
     <main class="public-page rating-page">
         <header class="public-header">
-            <a href="/" class="site-home-link">SelfBio</a>
+            <a href="/" class="site-home-link">{{ brand }}</a>
             <a href="/puzzles" class="brand">Whodoku</a>
-            <span class="header-links"><a href="/puzzles" class="quiet-link">К делам</a> <a href="/shop" class="quiet-link">Магазин</a> <a href="/rules" class="quiet-link">Правила</a> <PlayerBar /></span>
+            <span class="header-links"><a href="/puzzles" class="quiet-link">К игре</a> <a href="/shop" class="quiet-link">Магазин</a> <a href="/rules" class="quiet-link">Правила</a> <PlayerBar /></span>
         </header>
 
         <section class="catalog-intro">

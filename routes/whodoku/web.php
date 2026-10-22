@@ -9,6 +9,7 @@ use Whodoku\Http\Controllers\Player\FakePaymentController;
 use Whodoku\Http\Controllers\Player\PlayerAuthController;
 use Whodoku\Http\Controllers\Player\PlayerSkillController;
 use Whodoku\Http\Controllers\Player\PlayerStatsController;
+use Whodoku\Models\Puzzle;
 
 Route::get('/game', fn () => Inertia::render('HomePage'));
 
@@ -20,6 +21,8 @@ Route::get('/rating', fn () => Inertia::render('RatingPage'));
 Route::prefix('player')->group(function (): void {
     Route::get('/me', [PlayerAuthController::class, 'me']);
     Route::post('/login/telegram', [PlayerAuthController::class, 'telegram'])->middleware('throttle:player-login');
+    Route::post('/login/bot', [PlayerAuthController::class, 'botStart'])->middleware('throttle:player-login');
+    Route::post('/login/bot/check', [PlayerAuthController::class, 'botCheck'])->middleware('throttle:player-login-poll');
     Route::post('/login/dev', [PlayerAuthController::class, 'dev'])->middleware('throttle:player-login');
     Route::post('/logout', [PlayerAuthController::class, 'logout']);
     Route::delete('/account', [PlayerAuthController::class, 'destroy'])->middleware('throttle:player-login');
@@ -47,4 +50,9 @@ Route::get('/rules', fn () => Inertia::render('RulesPage'));
 
 Route::get('/puzzles', fn () => Inertia::render('PuzzleCatalogPage'));
 
-Route::get('/puzzles/{slug}', fn (string $slug) => Inertia::render('PuzzleGamePage', ['slug' => $slug]));
+Route::get('/puzzles/{slug}', function (string $slug) {
+    // No such published case: a real 404. A case behind sign-in still opens (the page asks to sign in), it is only not described to bots.
+    abort_unless(Puzzle::query()->where('slug', $slug)->where('status', 'published')->exists(), 404);
+
+    return Inertia::render('PuzzleGamePage', ['slug' => $slug]);
+});

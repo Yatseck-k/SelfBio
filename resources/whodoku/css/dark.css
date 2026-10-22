@@ -1415,4 +1415,8 @@
     background: rgb(106 96 73 / 12%);
 }
 
+:root[data-theme='dark'] .catalog-intro .catalog-about {
+    color: var(--case-muted, #bec5c2);
+}
+
 :root[data-theme='dark'] { color-scheme: dark; }

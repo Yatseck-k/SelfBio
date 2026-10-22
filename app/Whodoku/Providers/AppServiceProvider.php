@@ -8,6 +8,8 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Whodoku\Application\Player\Bot\BotLoginRequests;
+use Whodoku\Application\Player\Bot\TelegramBot;
 use Whodoku\Application\Player\TelegramIdentityVerifier;
 use Whodoku\Application\Player\TelegramWidgetVerifier;
 
@@ -22,7 +24,10 @@ class AppServiceProvider extends ServiceProvider
             (string) config('services.telegram.bot_token'),
             (int) config('services.telegram.max_age_seconds'),
         ));
-        //
+        $this->app->bind(TelegramBot::class, fn ($app) => new TelegramBot(
+            $app->make(BotLoginRequests::class),
+            (string) config('services.telegram.bot_token'),
+        ));
     }
 
     /**
@@ -36,5 +41,6 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('shop-order', fn (Request $request) => Limit::perMinute(6)->by($request->user('player')->id ?? $request->ip()));
         RateLimiter::for('shop-status', fn (Request $request) => Limit::perMinute(40)->by($request->user('player')->id ?? $request->ip()));
         RateLimiter::for('player-login', fn (Request $request) => Limit::perMinute(20)->by($request->ip()));
+        RateLimiter::for('player-login-poll', fn (Request $request) => Limit::perMinute(90)->by($request->ip()));
     }
 }

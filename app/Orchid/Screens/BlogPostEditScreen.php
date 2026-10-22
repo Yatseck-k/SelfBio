@@ -8,6 +8,7 @@ use App\Models\BlogPost;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Orchid\Screen\Actions\Button;
@@ -31,7 +32,8 @@ class BlogPostEditScreen extends Screen
                 'preview' => $post->preview,
                 'body' => $post->body,
                 'image' => $post->image,
-                'published_at' => $post->published_at?->format('Y-m-d\TH:i'),
+                // The field shows the time of the site's own zone; a new post starts at «now».
+                'published_at' => ($post->published_at ?? now())->copy()->timezone(config('app.display_timezone'))->format('Y-m-d\TH:i'),
             ],
         ];
     }
@@ -78,6 +80,8 @@ class BlogPostEditScreen extends Screen
             'image_upload' => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif', 'max:5120'],
         ]);
 
+        // The editor types the time of the site's zone, the database keeps UTC (the public list compares with «now»).
+        $data['post']['published_at'] = Date::parse($data['post']['published_at'], config('app.display_timezone'))->utc();
         $post->fill($data['post']);
         $old = $post->image;
         if ($request->hasFile('image_upload')) {

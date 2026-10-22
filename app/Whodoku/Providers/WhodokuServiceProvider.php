@@ -11,6 +11,7 @@ use Whodoku\Console\Commands\RatePuzzles;
 use Whodoku\Console\Commands\ReleaseCases;
 use Whodoku\Console\Commands\ReviewPuzzles;
 use Whodoku\Console\Commands\TelegramCheck;
+use Whodoku\Console\Commands\TelegramPoll;
 use Whodoku\Http\Middleware\UseWhodokuDatabase;
 
 class WhodokuServiceProvider extends ServiceProvider
@@ -28,6 +29,7 @@ class WhodokuServiceProvider extends ServiceProvider
                 ReleaseCases::class,
                 ReviewPuzzles::class,
                 TelegramCheck::class,
+                TelegramPoll::class,
             ]);
         }
 

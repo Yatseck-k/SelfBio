@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { useBrand } from '../composables/useBrand';
 import PlayerBar from '../Components/PlayerBar.vue';
+
+const brand = useBrand();
 </script>
 
 <template>
     <main class="public-page rules-page">
         <header class="public-header">
-            <a href="/" class="site-home-link">SelfBio</a>
+            <a href="/" class="site-home-link">{{ brand }}</a>
             <a href="/puzzles" class="brand">Whodoku</a>
             <span class="header-links"><PlayerBar /></span>
         </header>

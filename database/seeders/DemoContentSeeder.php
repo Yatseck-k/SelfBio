@@ -6,7 +6,8 @@ namespace Database\Seeders;
 
 use App\Models\BlogPost;
 use App\Models\ContactInfo;
-use App\Models\Welcome;
+use App\Models\SiteSetting;
+use App\Support\PageTexts;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Cache;
 
@@ -14,7 +15,7 @@ class DemoContentSeeder extends Seeder
 {
     public function run(): void
     {
-        if (! ContactInfo::query()->exists()) {
+        if (!ContactInfo::query()->exists()) {
             ContactInfo::query()->create([
                 'name' => 'Команда SelfBio (демо)',
                 'email' => 'hello@example.com',
@@ -25,12 +26,12 @@ class DemoContentSeeder extends Seeder
             Cache::forget('contact.show.data');
         }
 
-        if (! Welcome::query()->exists()) {
-            Welcome::query()->create([
-                'title' => 'SelfBio: заметки и проекты',
-                'body' => 'Это демонстрационная главная страница. Здесь можно найти контакты, прочитать записи блога, сыграть в Whodoku и войти в раздел ремонта.',
+        // The heading and the text of the home page are page texts now (the «welcome» table is no longer read).
+        if (!SiteSetting::query()->whereIn('key', ['page.contacts.title', 'page.contacts.lead'])->exists()) {
+            PageTexts::save([
+                'contacts.title' => 'SelfBio: заметки и проекты',
+                'contacts.lead' => 'Это демонстрационная главная страница. Здесь можно найти контакты, прочитать записи блога, сыграть в Whodoku и войти в раздел ремонта.',
             ]);
-            Cache::forget('welcome.index.data');
         }
 
         if (BlogPost::query()->exists()) {

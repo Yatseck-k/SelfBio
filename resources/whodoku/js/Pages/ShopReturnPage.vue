@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { useBrand } from '../composables/useBrand';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import PlayerBar from '../Components/PlayerBar.vue';
 import { loadOrder, type OrderState } from '../composables/useShop';
 import { loadPlayer } from '../composables/usePlayer';
+
+const brand = useBrand();
 
 const props = defineProps<{ order: string }>();
 
@@ -40,7 +43,7 @@ onBeforeUnmount(() => { if (timer) clearTimeout(timer); });
 <template>
     <main class="public-page">
         <header class="public-header">
-            <a href="/" class="site-home-link">SelfBio</a>
+            <a href="/" class="site-home-link">{{ brand }}</a>
             <a href="/puzzles" class="brand">Whodoku</a>
             <span class="header-links"><PlayerBar /></span>
         </header>

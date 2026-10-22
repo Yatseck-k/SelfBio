@@ -35,7 +35,7 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return Inertia::location(redirect()->intended(route('repair.index')));
+        return Inertia::location(redirect()->intended(route('account.index')));
     }
 
     public function destroy(Request $request): RedirectResponse

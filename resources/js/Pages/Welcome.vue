@@ -6,7 +6,7 @@ import SiteShell from '../Components/SiteShell.vue';
 import BlogPage from './BlogPage.vue';
 import ContactPage from './ContactPage.vue';
 
-defineProps({contact: {type: Object, default: null}, welcome: {type: Object, default: null}});
+defineProps({contact: {type: Object, default: null}});
 const activeTab = ref('contacts');
 const syncTab = () => { activeTab.value = window.location.hash === '#blog' ? 'blog' : 'contacts'; };
 onMounted(() => { syncTab(); window.addEventListener('hashchange', syncTab); });
@@ -16,7 +16,7 @@ onUnmounted(() => window.removeEventListener('hashchange', syncTab));
 <template>
     <Head :title="activeTab === 'contacts' ? trans('Contacts') : trans('Blog')" />
     <SiteShell :active="activeTab">
-        <ContactPage v-if="activeTab === 'contacts'" :contact="contact" :welcome="welcome" embedded />
+        <ContactPage v-if="activeTab === 'contacts'" embedded :contact="contact" />
         <BlogPage v-else embedded />
     </SiteShell>
 </template>

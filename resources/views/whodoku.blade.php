@@ -10,7 +10,7 @@
                 document.documentElement.dataset.theme = dark ? 'dark' : 'light';
             } catch (e) {}
         </script>
-        <title inertia>{{ config('app.name', 'Whodoku') }}</title>
+        @include('partials.seo')
         <link rel="preload" href="/fonts/golos-text-400-800-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
         <link rel="preload" href="/fonts/lora-500-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
         @vite('resources/whodoku/js/app.ts')
@@ -18,5 +18,8 @@
     </head>
     <body>
         @inertia
+        @if ($seo['noscript'] !== '')
+            <noscript>{!! $seo['noscript'] !!}</noscript>
+        @endif
     </body>
 </html>

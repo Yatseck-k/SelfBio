@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useBrand } from '../composables/useBrand';
 import { plural } from '../composables/plural';
 import { culpritAccusative, puzzleTypeLabel } from '../composables/puzzleTypes';
 import { computed, nextTick, onMounted, ref } from 'vue';
@@ -21,6 +22,8 @@ import BuyHintsDialog from '../Components/BuyHintsDialog.vue';
 import { apiHeaders, loadPlayer, playerState } from '../composables/usePlayer';
 import { usePuzzleProgress } from '../composables/usePuzzleProgress';
 import type { Cell, ChapterOutro, ClueTarget, Ending, HintBalance, PuzzleDetail, SolveReward } from '../types/puzzle';
+
+const brand = useBrand();
 
 const props = defineProps<{ slug: string }>();
 const puzzle = ref<PuzzleDetail | null>(null);
@@ -295,10 +298,10 @@ onMounted(loadPuzzle);
 <template>
     <main class="game-page">
         <header class="public-header">
-            <a href="/" class="site-home-link">SelfBio</a>
+            <a href="/" class="site-home-link">{{ brand }}</a>
             <a href="/puzzles" class="brand"><span aria-hidden="true">←</span> К делам</a>
             <span v-if="puzzle" class="game-revision"><span class="case-status-dot" aria-hidden="true"></span> Дело · версия {{ puzzle.revision }}</span>
-            <span class="header-links"><a href="/rating" class="quiet-link">Рейтинг</a> <a href="/shop" class="quiet-link">Магазин</a> <a href="/rules" class="quiet-link">Правила</a> <PlayerBar /></span>
+            <span class="header-links"><a href="/puzzles" class="quiet-link">К игре</a> <a href="/rating" class="quiet-link">Рейтинг</a> <a href="/shop" class="quiet-link">Магазин</a> <a href="/rules" class="quiet-link">Правила</a> <PlayerBar /></span>
         </header>
         <p v-if="loading" class="state-message" role="status">Загружаем дело…</p>
         <section v-else-if="needsLogin" class="state-card">
@@ -335,8 +338,11 @@ onMounted(loadPuzzle);
                 <article v-for="hint in shownHints" :key="hint.level" class="hint-card"><strong>Подсказка {{ hint.level }} из 3</strong><p>{{ hint.text }}</p></article>
             </section>
             <div class="game-layout">
-                <TokenPanel class="game-tokens" :tokens="puzzle.tokens" :placements="progress.placements" :selected-token="selectedToken" :candidate-counts="helperOn ? candidatesByToken : null" :poses="poses" @select="selectToken" />
                 <PuzzleGrid class="game-map" :puzzle="puzzle" :placements="progress.placements" :notes="abilities.notes ? progress.notes : {}" :selected-token="selectedToken" :scene="scene" :highlight="highlight" :candidates="candidateKeys" :cover="abilities.autoCross" @select-cell="selectCell" />
+                <div class="game-slider" aria-label="Свидетели и показания">
+                    <TokenPanel class="game-tokens" :tokens="puzzle.tokens" :placements="progress.placements" :selected-token="selectedToken" :candidate-counts="helperOn ? candidatesByToken : null" :poses="poses" @select="selectToken" />
+                    <ClueList class="game-clues" :clues="puzzle.clues" :used-clues="progress.usedClues" :tokens="puzzle.tokens" :victim="puzzle.victim" :pinned="pinnedClue" :locate="abilities.locateOnMap" @toggle="toggleClue" @preview="previewTarget = $event" @pin="pinClue" />
+                </div>
                 <section class="game-controls" aria-label="Управление расследованием">
                     <div class="controls-main">
                         <div class="selection-summary">
@@ -357,7 +363,6 @@ onMounted(loadPuzzle);
                     </div>
                     <NotebookPanel class="controls-notebook" :notes-open="abilities.notes" :helper-open="abilities.helper" :mark-open="abilities.markCandidates" :place-open="abilities.autoplace" :can-place="singleCell !== null" :signed-in="playerState.player !== null" :helper-on="helperOn" :helper-note="helperNote" :can-mark="candidateKeys !== null" :can-clear="selectedToken !== null" @toggle-helper="toggleHelper" @mark-candidates="markCandidates" @clear-notes="clearNotes" @place-single="placeSingle" />
                 </section>
-                <ClueList class="game-clues" :clues="puzzle.clues" :used-clues="progress.usedClues" :tokens="puzzle.tokens" :victim="puzzle.victim" :pinned="pinnedClue" :locate="abilities.locateOnMap" @toggle="toggleClue" @preview="previewTarget = $event" @pin="pinClue" />
             </div>
             <EndingCard v-if="progress.ending" :ending="progress.ending" :type="puzzle.type" :tokens="puzzle.tokens" :scene="scene" :reward="reward" :guest="!playerState.player" :chapter="chapterOutro" :next-busy="endless.busy" @next="playNext" />
             <p v-if="endless.error" class="login-error" role="alert">{{ endless.error }}</p>

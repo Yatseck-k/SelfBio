@@ -6,12 +6,14 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { i18nVue } from 'laravel-vue-i18n';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+// The name of the site is sent by the server with every page (APP_NAME); the build-time value is only the fallback.
+let appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
+        appName = props.initialPage.props.brand ?? appName;
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(i18nVue, {

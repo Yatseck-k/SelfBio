@@ -7,6 +7,7 @@ namespace Whodoku\Http\Controllers\Player;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Whodoku\Application\Player\Bot\BotLoginRequests;
 use Whodoku\Application\Player\InvalidTelegramLogin;
 use Whodoku\Application\Player\PlayerAccountDeleter;
 use Whodoku\Application\Player\PlayerPresenter;
@@ -30,7 +31,7 @@ class PlayerAuthController extends Controller
 
         return response()->json([
             'player' => $player === null ? null : $presenter->present($player),
-            'login' => ['bot_username' => config('services.telegram.bot_username'), 'dev' => $this->devLoginEnabled()],
+            'login' => ['bot_username' => config('services.telegram.bot_username'), 'bot' => $this->botLoginEnabled(), 'dev' => $this->devLoginEnabled()],
         ]);
     }
 
@@ -43,6 +44,39 @@ class PlayerAuthController extends Controller
         }
 
         return $this->signIn($request, $registry->fromIdentity($identity), $presenter);
+    }
+
+    /** Sign-in through the bot, step 1: a one-time request and the link that opens the bot with its code. */
+    public function botStart(Request $http, BotLoginRequests $requests): JsonResponse
+    {
+        abort_unless($this->botLoginEnabled(), 404);
+        // The bot shows where the sign-in is asked from, so that a person can refuse a link that a stranger sent.
+        $request = $requests->open((string) $http->ip(), (string) $http->userAgent());
+        $bot = ltrim((string) config('services.telegram.bot_username'), '@');
+
+        return response()->json([
+            'code' => $request['code'],
+            'secret' => $request['secret'],
+            'link' => "https://t.me/{$bot}?start={$request['code']}",
+            'expires_in' => BotLoginRequests::TTL_SECONDS,
+        ]);
+    }
+
+    /** Step 2, polled by the page: 202 while the player has not pressed Start, 410 when the request is gone, 200 once signed in. */
+    public function botCheck(Request $request, BotLoginRequests $requests, PlayerRegistry $registry, PlayerPresenter $presenter): JsonResponse
+    {
+        abort_unless($this->botLoginEnabled(), 404);
+        $data = $request->validate(['code' => ['required', 'string', 'size:32'], 'secret' => ['required', 'string', 'size:32']]);
+
+        $result = $requests->claim($data['code'], $data['secret']);
+        if ($result === 'pending') {
+            return response()->json(['status' => 'pending'], 202);
+        }
+        if ($result === 'expired') {
+            return response()->json(['status' => 'expired', 'message' => 'Время входа истекло. Попробуйте ещё раз.'], 410);
+        }
+
+        return $this->signIn($request, $registry->fromIdentity($result), $presenter);
     }
 
     /** A stand-in for the Telegram widget on a machine without a public domain. */
@@ -88,6 +122,11 @@ class PlayerAuthController extends Controller
         $request->session()->regenerate();
 
         return response()->json(['player' => $presenter->present($player)]);
+    }
+
+    private function botLoginEnabled(): bool
+    {
+        return (string) config('services.telegram.bot_token') !== '' && (string) config('services.telegram.bot_username') !== '';
     }
 
     private function devLoginEnabled(): bool

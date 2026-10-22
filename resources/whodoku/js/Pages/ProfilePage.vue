@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useBrand } from '../composables/useBrand';
 import { computed, onMounted, ref, watch } from 'vue';
 import BuyHintsDialog from '../Components/BuyHintsDialog.vue';
 import DetectiveForm from '../Components/DetectiveForm.vue';
@@ -10,6 +11,8 @@ import { plural } from '../composables/plural';
 import { puzzleTypeLabel } from '../composables/puzzleTypes';
 import { apiHeaders, deleteAccount, loadPlayer, playerState } from '../composables/usePlayer';
 import type { PlayerStats } from '../types/puzzle';
+
+const brand = useBrand();
 
 const stats = ref<PlayerStats | null>(null);
 const editing = ref(false);
@@ -64,9 +67,9 @@ watch(() => playerState.player?.id, () => { void loadStats(); });
 <template>
     <main class="public-page profile-page">
         <header class="public-header">
-            <a href="/" class="site-home-link">SelfBio</a>
+            <a href="/" class="site-home-link">{{ brand }}</a>
             <a href="/puzzles" class="brand">Whodoku</a>
-            <span class="header-links"><a href="/rating" class="quiet-link">Рейтинг</a> <a href="/shop" class="quiet-link">Магазин</a> <a href="/rules" class="quiet-link">Правила</a> <PlayerBar /></span>
+            <span class="header-links"><a href="/puzzles" class="quiet-link">К игре</a> <a href="/rating" class="quiet-link">Рейтинг</a> <a href="/shop" class="quiet-link">Магазин</a> <a href="/rules" class="quiet-link">Правила</a> <PlayerBar /></span>
         </header>
 
         <p v-if="loading" class="state-message" role="status">Загружаем профиль…</p>

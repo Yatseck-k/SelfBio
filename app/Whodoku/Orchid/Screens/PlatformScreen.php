@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Whodoku\Orchid\Screens;
 
+use App\Models\BlogPost;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Orchid\Screen\Action;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -17,7 +20,13 @@ class PlatformScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        // The few numbers of the cards on the main page; a missing table or an unreachable schema just hides the number.
+        return ['stats' => [
+            'posts' => rescue(fn (): int => BlogPost::query()->count(), null, false),
+            'puzzles' => rescue(fn (): int => DB::connection('whodoku')->table('puzzles')->where('status', 'published')->count(), null, false),
+            'players' => rescue(fn (): int => DB::connection('whodoku')->table('players')->count(), null, false),
+            'account' => rescue(fn (): int => User::query()->count(), null, false),
+        ]];
     }
 
     /**
@@ -25,7 +34,7 @@ class PlatformScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'SelfBio / Whodoku';
+        return config('app.name').' / Whodoku';
     }
 
     /**
@@ -33,7 +42,7 @@ class PlatformScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Управление контентом SelfBio и игрой Whodoku.';
+        return 'Управление контентом '.config('app.name').' и игрой Whodoku.';
     }
 
     /**

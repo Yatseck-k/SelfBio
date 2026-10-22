@@ -19,7 +19,7 @@ class LoginTest extends TestCase
         $this->post('/login', [
             'email' => $user->email,
             'password' => 'correct-horse-battery-staple',
-        ])->assertRedirect('/repair');
+        ])->assertRedirect('/account');
 
         $this->assertAuthenticatedAs($user);
         $this->post('/logout')->assertRedirect('/');

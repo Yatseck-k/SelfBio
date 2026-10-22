@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Dto;
 
 use App\Dto\Interfaces\DtoInterface;
+use App\Models\BlogPost;
 use App\Models\Interfaces\BaseModelInterface;
 use DateTime;
 
@@ -46,6 +47,7 @@ class BlogPostDto implements DtoInterface
             'preview' => $this->preview,
             'body' => $this->body,
             'image' => $this->image,
+            'image_url' => BlogPost::publicImageUrl($this->image),
             'published_at' => $this->publishedAt,
         ];
     }

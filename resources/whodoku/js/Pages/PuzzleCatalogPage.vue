@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useBrand } from '../composables/useBrand';
+import { useCatalogAbout } from '../composables/useSiteTexts';
 import { computed, onMounted, ref } from 'vue';
 import PlayerBar from '../Components/PlayerBar.vue';
 import DifficultyStars from '../Components/DifficultyStars.vue';
@@ -9,6 +11,9 @@ import { plural } from '../composables/plural';
 import { apiHeaders, loadPlayer, playerState } from '../composables/usePlayer';
 import { isSolved } from '../composables/usePuzzleProgress';
 import type { PuzzleSummary } from '../types/puzzle';
+
+const brand = useBrand();
+const about = useCatalogAbout();
 
 const puzzles = ref<PuzzleSummary[]>([]);
 // Cases the signed-in player solved, as the server counts them.
@@ -80,7 +85,7 @@ onMounted(load);
 <template>
     <main class="public-page">
         <header class="public-header">
-            <a href="/" class="site-home-link">SelfBio</a>
+            <a href="/" class="site-home-link">{{ brand }}</a>
             <a href="/puzzles" class="brand">Whodoku</a>
             <span class="header-links"><a href="/rating" class="quiet-link">Рейтинг</a> <a href="/shop" class="quiet-link">Магазин</a> <a href="/rules" class="quiet-link">Правила</a> <PlayerBar /></span>
         </header>
@@ -88,6 +93,7 @@ onMounted(load);
             <p class="eyebrow">Каталог</p>
             <h1>Выберите дело</h1>
             <p>Расставьте гостей на карте, сопоставьте показания и раскройте дело.</p>
+            <p class="catalog-about">{{ about }}</p>
             <div class="play-modes">
                 <a class="primary-action" href="/story">Путь детектива <span aria-hidden="true">→</span></a>
                 <button class="secondary-action" type="button" :disabled="endless.busy || (playerState.loaded && !playerState.player)" :title="playerState.player ? undefined : 'Свободная игра — после входа'" @click="playNext">{{ endless.busy ? 'Подбираем дело…' : 'Свободная игра: следующее дело' }}</button>
