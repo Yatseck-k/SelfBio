@@ -23,6 +23,8 @@ command -v rsync >/dev/null || { echo "rsync не установлен"; exit 1;
 mkdir -p "$DIR" "$BACKUPS"
 STAGE=$(mktemp -d /opt/selfbio-stage.XXXXXX)
 trap 'rm -rf "$STAGE"' EXIT
+# mktemp создаёт каталог с правами 700, а rsync -a переносит их на $DIR: системный nginx перестал бы видеть public/.
+chmod 755 "$STAGE"
 
 echo "==> Распаковка во временный каталог"
 tar xzf "$ARCHIVE" --strip-components=1 -C "$STAGE"
@@ -100,6 +102,8 @@ done
 # Каталог монтируется по тому же пути, что и в контейнере приложения: пути в bootstrap/cache остаются верными.
 docker run --rm -v "$STAGE:/var/www/html" "${NET_OPT[@]}" "$IMAGE" \
     composer install --no-dev --optimize-autoloader --no-interaction
+# Ассеты админки (public/vendor/orchid) не хранятся в git: копируются из пакета под установленную версию.
+docker run --rm -v "$STAGE:/var/www/html" "${NET_OPT[@]}" "$IMAGE" php artisan orchid:publish
 docker run --rm -u 1000:1000 -e HOME=/tmp -v "$STAGE:/var/www/html" -w /var/www/html "$NODE_IMAGE" \
     sh -c 'npm ci && npm run build'
 
