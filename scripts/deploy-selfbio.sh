@@ -66,9 +66,24 @@ cp -p "$DIR/.env" "$STAGE/.env"
 FIRST_RUN=0
 grep -q '^APP_KEY=.\+' "$DIR/.env" || FIRST_RUN=1
 
+echo "==> Образы"
+# Docker Hub ограничивает анонимные скачивания (429): при отказе образ берётся из зеркала Google и получает обычное имя.
+fetch_image() {
+    local image=$1 mirror
+    case "$image" in */*) mirror="mirror.gcr.io/$image" ;; *) mirror="mirror.gcr.io/library/$image" ;; esac
+    docker pull -q "$image" >/dev/null 2>&1 && return 0
+    docker image inspect "$image" >/dev/null 2>&1 && { echo "  $image: Docker Hub недоступен, остаётся локальная копия"; return 0; }
+    echo "  $image: Docker Hub недоступен, беру из $mirror"
+    docker pull -q "$mirror" >/dev/null && docker tag "$mirror" "$image"
+}
+PHP_BASE=$(sed -n 's/^FROM \([^ ]*\) AS base$/\1/p' "$STAGE/docker/php-fpm/Dockerfile")
+for image in "$PHP_BASE" "$NODE_IMAGE" $(sed -n "s/^ *image: '\{0,1\}\([^'\$]*\)'\{0,1\}$/\1/p" "$STAGE/docker-compose.yml" | grep -v '^selfbio/'); do
+    fetch_image "$image"
+done
+
 echo "==> Сборка образа PHP"
-# Версия PHP закреплена в Dockerfile (php:8.5.X-fpm): патч-релиз = правка тега там. --pull обновляет сам тег.
-docker build --pull --target prod --build-arg PUID=1000 --build-arg PGID=1000 -t "$IMAGE" "$STAGE/docker/php-fpm"
+# Версия PHP закреплена в Dockerfile (php:8.5.X-fpm): патч-релиз = правка тега там. Базовый образ уже обновлён выше.
+docker build --target prod --build-arg PUID=1000 --build-arg PGID=1000 -t "$IMAGE" "$STAGE/docker/php-fpm"
 
 echo "==> Зависимости и фронтенд во временном каталоге"
 # Прежний vendor ускоряет composer.
