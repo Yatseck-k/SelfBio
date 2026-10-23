@@ -1,0 +1,17 @@
+[Unit]
+Description=Bounded packet capture for yatseck.ru HTTPS diagnostics
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+UMask=0077
+ExecStart=/usr/bin/tcpdump -i eth0 -p -n -U -Z root -s 128 -C 5 -W 4 -w /var/log/yatseck-packets/https.pcap 'tcp port 443 and host 217.11.166.118'
+Restart=always
+RestartSec=5s
+NoNewPrivileges=true
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
