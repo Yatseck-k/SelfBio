@@ -6,7 +6,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 UMask=0077
-ExecStart=/usr/bin/tcpdump -i eth0 -p -n -U -Z root -s 128 -C 5 -W 4 -w /var/log/yatseck-packets/https.pcap 'tcp port 443 and host 217.11.166.118'
+ExecStart=/usr/bin/tcpdump -i eth0 -p -n -U -Z root -s 128 -C 5 -W 4 -w /var/log/yatseck-packets/https.pcap 'host 217.11.166.118 and (tcp port 443 or tcp port 8443)'
 Restart=always
 RestartSec=5s
 NoNewPrivileges=true
