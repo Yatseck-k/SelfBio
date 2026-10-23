@@ -13,3 +13,11 @@ tcpdump -nn -tttt -r /var/log/yatseck-packets/https.pcap 'host CLIENT_IP and tcp
 ```
 
 When there is no diagnostic access entry, inspect the packet capture and TLS error log. A completed TCP handshake followed by only the first part of a TLS record points to a failure before nginx can process an HTTP request. The packet capture is a rolling window and should not be treated as a long-term archive.
+
+## iOS 26 connection incident, 2026-10-23
+
+The iPhone 16 Pro Max running iOS 26.3.1 sent a TLS ClientHello with an X25519MLKEM768 key share. Its TLS record declared 1,533 bytes including the record header. On failed connections from the mobile network, the server's `eth0` capture and TCP socket received only the first 1,388 bytes; no HTTP request followed. Advertising a 1,200-byte TCP MSS changed the first received piece to 1,188 bytes but did not make the remaining piece arrive, so the temporary MSS rule was removed.
+
+The iPhone SE running iOS 18.7.2 received HTTP 200 responses. Both observed mobile addresses were in AS8359 (MTS). The server address is in AS57043 (HOSTKEY). The host firewall accepts port 443, conntrack was far below capacity, and the virtual network interface reported zero receive drops.
+
+A [large fragmented ClientHello test](https://github.com/dadrian/tldr.fail/blob/main/tldr_fail_test.py) returned a TLS ServerHello for both one-write and two-write cases, from an external machine and from server loopback. This rules out nginx failing to read a fragmented ClientHello in those tests. The missing piece could be lost in the network path or not sent by the client; a capture on the phone or provider edge would distinguish those cases. A different TLS termination address or provider-side investigation is needed to fix the public route. Changing nginx's preferred TLS group cannot shrink a ClientHello that the phone has already sent.
