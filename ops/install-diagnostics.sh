@@ -45,10 +45,15 @@ if ! nginx -t; then
     exit 1
 fi
 
-install -m 0644 "$source_dir/systemd/yatseck-tls-capture.service" /etc/systemd/system/yatseck-tls-capture.service
-systemctl daemon-reload
-systemctl enable --now yatseck-tls-capture.service
-systemctl restart yatseck-tls-capture.service
+unit=/etc/systemd/system/yatseck-tls-capture.service
+if ! cmp -s "$source_dir/systemd/yatseck-tls-capture.service" "$unit"; then
+    install -m 0644 "$source_dir/systemd/yatseck-tls-capture.service" "$unit"
+    systemctl daemon-reload
+    systemctl enable --now yatseck-tls-capture.service
+    systemctl restart yatseck-tls-capture.service
+else
+    systemctl enable --now yatseck-tls-capture.service
+fi
 systemctl reload nginx
 
 sleep 2
