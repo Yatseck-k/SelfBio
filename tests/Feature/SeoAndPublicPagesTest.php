@@ -7,6 +7,7 @@ namespace Tests\Feature;
 use App\Models\BlogPost;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
 class SeoAndPublicPagesTest extends TestCase
@@ -57,6 +58,37 @@ class SeoAndPublicPagesTest extends TestCase
         $this->assertStringContainsString('Текст записи', $html);
     }
 
+    public function test_profile_pages_have_distinct_languages_and_search_metadata(): void
+    {
+        $this->get('/en')->assertInertia(fn (AssertableInertia $page) => $page->where('locale', 'en'));
+        $this->get('/')->assertInertia(fn (AssertableInertia $page) => $page->where('locale', 'ru'));
+
+        foreach (['/' => 'ru', '/about' => 'ru', '/contacts' => 'ru', '/en' => 'en', '/en/about' => 'en', '/en/contacts' => 'en'] as $path => $locale) {
+            $html = $this->get($path)->assertOk()->getContent();
+            $this->assertStringContainsString('<html lang="'.$locale.'">', $html);
+            $this->assertStringContainsString('<link rel="canonical" href="'.url($path).'">', $html);
+            $this->assertStringContainsString('hreflang="ru"', $html);
+            $this->assertStringContainsString('hreflang="en"', $html);
+            $this->assertStringNotContainsString('SoftwareApplication', $html);
+        }
+
+        $this->assertStringContainsString('Антон Яценко', $this->get('/')->getContent());
+        $this->assertStringContainsString('Anton Yatsenko', $this->get('/en')->getContent());
+        $this->assertStringContainsString('"@type":"Person"', $this->get('/about')->getContent());
+        $this->assertStringContainsString('"@type":"WebSite"', $this->get('/')->getContent());
+        $this->get('/projects')->assertNotFound();
+    }
+
+    public function test_home_shows_only_published_recent_articles(): void
+    {
+        $this->post_('published', ['title' => 'Публичная статья']);
+        $this->post_('future', ['title' => 'Будущая статья', 'published_at' => now()->addDay()]);
+
+        $html = $this->get('/')->assertOk()->getContent();
+        $this->assertStringContainsString('Публичная статья', $html);
+        $this->assertStringNotContainsString('Будущая статья', $html);
+    }
+
     public function test_the_copy_for_bots_drops_attributes_and_scripts_of_the_post(): void
     {
         $this->post_('risky', ['body' => '<p onclick="steal()">Текст <a href="javascript:evil()">ссылка</a></p><script>alert(1)</script><img src=x onerror=evil()>']);
@@ -94,6 +126,9 @@ class SeoAndPublicPagesTest extends TestCase
         $sitemap = $this->get('/sitemap.xml')->assertOk()->assertHeader('Content-Type', 'application/xml; charset=UTF-8')->getContent();
         $this->assertStringContainsString('<loc>'.url('/blog/open-post').'</loc>', $sitemap);
         $this->assertStringContainsString('<loc>'.url('/puzzles').'</loc>', $sitemap);
+        $this->assertStringContainsString('<loc>'.url('/about').'</loc>', $sitemap);
+        $this->assertStringContainsString('<loc>'.url('/en/about').'</loc>', $sitemap);
+        $this->assertStringNotContainsString('/projects', $sitemap);
         $this->assertStringNotContainsString('/admin', $sitemap);
         $this->assertStringNotContainsString('/repair', $sitemap);
     }

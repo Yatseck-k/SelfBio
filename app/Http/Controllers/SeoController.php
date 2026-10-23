@@ -39,6 +39,10 @@ class SeoController extends Controller
     {
         $urls = [
             ['loc' => url('/'), 'priority' => '1.0'],
+            ['loc' => url('/about'), 'priority' => '0.7'],
+            ['loc' => url('/en'), 'priority' => '0.8'],
+            ['loc' => url('/en/about'), 'priority' => '0.6'],
+            ['loc' => url('/en/contacts'), 'priority' => '0.4'],
             ['loc' => url('/blog'), 'priority' => '0.8'],
             ['loc' => url('/contacts'), 'priority' => '0.5'],
             ['loc' => url('/puzzles'), 'priority' => '0.8'],

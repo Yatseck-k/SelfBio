@@ -1,6 +1,9 @@
 <title inertia>{{ $seo['title'] }}</title>
 <meta name="description" content="{{ $seo['description'] }}">
 <link rel="canonical" href="{{ $seo['canonical'] }}">
+@foreach ($seo['alternates'] ?? [] as $lang => $href)
+<link rel="alternate" hreflang="{{ $lang }}" href="{{ $href }}">
+@endforeach
 @if ($seo['noindex'])
 <meta name="robots" content="noindex, nofollow">
 @endif

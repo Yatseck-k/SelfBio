@@ -51,6 +51,8 @@ class HandleInertiaRequests extends Middleware
             'signedIn' => $request->user() !== null,
             // The name of the site (APP_NAME, changed by `php artisan site:rename`): pages never spell it out.
             'brand' => config('app.name'),
+            // Shared props are prepared before route middleware switches the locale for /en.
+            'locale' => $request->is('en', 'en/*') ? 'en' : 'ru',
             // One-time message after a redirect («Пароль изменён»).
             'status' => fn () => $request->session()->get('status'),
             // The headings and explanations of the pages that the editors change in the admin panel.

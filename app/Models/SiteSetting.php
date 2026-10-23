@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\WithoutIncrementing;
 use Illuminate\Database\Eloquent\Model;
 
-/** A named setting of the site that the editors change in the admin panel (the name of the site, for now). */
+/** A named setting of the site that editors change in the admin panel. */
 #[Fillable(['key', 'value'])]
 #[Table(name: 'site_settings', key: 'key', keyType: 'string')]
 #[Connection('pgsql')]

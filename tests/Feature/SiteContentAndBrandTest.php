@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Support\SiteName;
+use App\Support\Profile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -149,6 +150,69 @@ class SiteContentAndBrandTest extends TestCase
             ->where('pageTexts.blog.title', 'Блог'));
         $this->assertDatabaseMissing('site_settings', ['key' => 'page.contacts.title'], 'pgsql');
         $this->assertDatabaseMissing('site_settings', ['key' => 'page.blog.title'], 'pgsql');
+    }
+
+    public function test_profile_content_and_blocks_are_edited_for_both_languages(): void
+    {
+        $this->actingAs($this->admin(), 'game_admin');
+        $this->get('/admin/selfbio/profile')->assertOk()->assertSee('Карточки компетенций')->assertSee('English');
+
+        $ru = Profile::editor('ru');
+        $en = Profile::editor('en');
+        $ru['name'] = 'Проверочное имя';
+        $ru['lead'] = 'Новый текст главной.';
+        $ru['about_lead'] = 'Новое вступление обо мне.';
+        $ru['focus_enabled'] = '0';
+        $ru['hero_tags'] = null;
+        $ru['focus_order'] = 4;
+        $ru['contact_order'] = 1;
+        $ru['writing_title'] = 'Новые статьи';
+        $en['name'] = 'Test name';
+        $en['focus'][0]['title'] = 'Edited focus';
+
+        $this->post('/admin/selfbio/profile/save', ['profile' => ['ru' => $ru, 'en' => $en]])
+            ->assertRedirect('/admin/selfbio/profile');
+        $this->assertDatabaseHas('site_settings', ['key' => 'profile.ru'], 'pgsql');
+        $this->assertDatabaseHas('site_settings', ['key' => 'profile.en'], 'pgsql');
+        $this->get('/')->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('profile.name', 'Проверочное имя')
+            ->where('profile.lead', 'Новый текст главной.')
+            ->where('profile.focus_enabled', false)
+            ->where('profile.hero_tags', [])
+            ->where('profile.contact_order', 1)
+            ->where('profile.writing_title', 'Новые статьи'));
+        $this->get('/en')->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('profile.name', 'Test name')
+            ->where('profile.focus.0.title', 'Edited focus'));
+        $this->assertStringContainsString('Проверочное имя', $this->get('/')->getContent());
+        $this->assertStringContainsString('Новое вступление обо мне.', $this->get('/about')->getContent());
+        $this->assertStringNotContainsString('Архитектура backend', $this->get('/')->getContent());
+
+        $this->post('/admin/selfbio/profile/reset', ['locale' => 'ru'])->assertRedirect('/admin/selfbio/profile');
+        $this->get('/')->assertInertia(fn (AssertableInertia $page) => $page->where('profile.name', 'Антон Яценко'));
+        $this->get('/en')->assertInertia(fn (AssertableInertia $page) => $page->where('profile.name', 'Test name'));
+    }
+
+    public function test_profile_editor_rejects_unauthorized_changes(): void
+    {
+        $this->actingAs($this->admin(['platform.index' => true]), 'game_admin');
+        $this->get('/admin/selfbio/profile')->assertForbidden();
+        $this->post('/admin/selfbio/profile/save', ['profile' => []])->assertForbidden();
+    }
+
+    public function test_profile_editor_rejects_invalid_content(): void
+    {
+        $this->actingAs($this->admin(), 'game_admin');
+        $ru = Profile::editor('ru');
+        $en = Profile::editor('en');
+        $ru['name'] = '';
+        $this->post('/admin/selfbio/profile/save', ['profile' => ['ru' => $ru, 'en' => $en]])
+            ->assertSessionHasErrors('profile.ru.name');
+        $ru['name'] = 'Антон Яценко';
+        $ru['focus_order'] = 2;
+        $this->post('/admin/selfbio/profile/save', ['profile' => ['ru' => $ru, 'en' => $en]])
+            ->assertSessionHasErrors('profile.ru.focus_order');
+        $this->assertDatabaseMissing('site_settings', ['key' => 'profile.ru'], 'pgsql');
     }
 
     public function test_a_session_lives_a_week_by_default(): void

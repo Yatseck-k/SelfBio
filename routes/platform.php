@@ -10,6 +10,7 @@ use App\Orchid\Screens\BlogPostListScreen;
 use App\Orchid\Screens\CardSettingsScreen;
 use App\Orchid\Screens\ContactInfoScreen;
 use App\Orchid\Screens\GameSettingsScreen;
+use App\Orchid\Screens\ProfileContentScreen;
 use App\Orchid\Screens\SiteSettingsScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
@@ -48,6 +49,7 @@ Route::screen('selfbio/blog/create', BlogPostEditScreen::class)->name('platform.
 Route::screen('selfbio/blog/{post}/edit', BlogPostEditScreen::class)->name('platform.selfbio.blog.edit');
 Route::screen('selfbio/blog', BlogPostListScreen::class)->name('platform.selfbio.blog');
 Route::screen('selfbio/contacts', ContactInfoScreen::class)->name('platform.selfbio.contacts');
+Route::screen('selfbio/profile', ProfileContentScreen::class)->name('platform.selfbio.profile');
 Route::screen('selfbio/settings', SiteSettingsScreen::class)->name('platform.selfbio.settings');
 Route::screen('selfbio/card-settings', CardSettingsScreen::class)->name('platform.selfbio.card');
 Route::screen('selfbio/game-settings', GameSettingsScreen::class)->name('platform.selfbio.game');

@@ -42,6 +42,7 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('bs.card-text')
                 ->canSee($canAny(['platform.selfbio.settings.view', 'platform.selfbio.contacts.view', 'platform.selfbio.blog.view']))
                 ->list([
+                    Menu::make('Главная и «Обо мне»')->icon('bs.person-vcard')->route('platform.selfbio.profile')->permission('platform.selfbio.settings.view'),
                     Menu::make('Настройки сайта-визитки')->icon('bs.sliders')->route('platform.selfbio.card')->permission('platform.selfbio.settings.view'),
                     Menu::make('Контакты')->icon('bs.person-lines-fill')->route('platform.selfbio.contacts')->permission('platform.selfbio.contacts.view'),
                     Menu::make('Блог')->icon('bs.journal-text')->route('platform.selfbio.blog')->permission('platform.selfbio.blog.view'),
