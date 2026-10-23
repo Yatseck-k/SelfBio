@@ -41,7 +41,6 @@ chmod 0640 /var/log/nginx/yatseck.diagnostic.log
 
 if ! nginx -t; then
     cp -a -- "$backup" "$site"
-    rm -f /etc/nginx/conf.d/yatseck-diagnostic-log.conf
     nginx -t
     exit 1
 fi
