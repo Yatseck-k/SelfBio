@@ -39,7 +39,7 @@ class RegeneratePuzzles extends Command
             if ($limit !== null && $done + $failed >= $limit) {
                 break;
             }
-            if ($this->furnitureShare($puzzle) <= $share) {
+            if ($this->furnitureShare($puzzle) <= $share && !$this->lacksStoryConditions($puzzle)) {
                 continue;
             }
             $this->line("{$puzzle->slug} ({$puzzle->collection}".($puzzle->story_chapter ? ", глава {$puzzle->story_chapter}" : '').", сложность {$puzzle->difficulty})");
@@ -62,6 +62,23 @@ class RegeneratePuzzles extends Command
         $this->line(($apply ? 'Заменено' : 'Будет заменено')." дел: $done, не удалось: $failed.");
 
         return $failed === 0 ? self::SUCCESS : self::FAILURE;
+    }
+
+    /** A story chapter teaches its conditions, so a case that carries fewer of them than the chapter names is replaced. */
+    private function lacksStoryConditions(Puzzle $puzzle): bool
+    {
+        if ($puzzle->story_chapter === null) {
+            return false;
+        }
+        $types = ['every_room' => ClueType::EveryRoomHasToken, 'room_exact_count' => ClueType::RoomTokenCount, 'room_limit' => ClueType::RoomTokenLimit];
+        $present = $puzzle->clues->map(fn ($clue) => $clue->constraint_type instanceof ClueType ? $clue->constraint_type : ClueType::tryFrom((string) $clue->constraint_type))->all();
+        foreach (config("story.chapters.{$puzzle->story_chapter}.conditions", []) as $condition) {
+            if (!in_array($types[$condition], $present, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** The share of the guests who stand on a piece of furniture in the author's placement. */
@@ -97,7 +114,7 @@ class RegeneratePuzzles extends Command
         for ($try = 0; $try < 3 && $new === null; $try++) {
             try {
                 $new = $publisher->publish(
-                    GenerationProfile::forGrid($old->rows, $old->cols, seed: random_int(1, 2147483647), maxAttempts: 12, conditions: $conditions),
+                    GenerationProfile::forGrid($old->rows, $old->cols, seed: random_int(1, 2147483647), maxAttempts: $conditions === [] ? 12 : 40, conditions: $conditions),
                     null,
                     $options,
                 );

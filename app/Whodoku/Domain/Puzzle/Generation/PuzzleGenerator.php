@@ -81,7 +81,12 @@ class PuzzleGenerator
     {
         $type = $profile->type ?? $random->pick(PuzzleType::generated());
         $characters = $this->texts->characters($random, $this->tokenCount($profile->rows, $profile->cols));
-        $roomNames = $this->texts->roomNames($random, $this->roomCount($profile->rows, $profile->cols));
+        $roomCount = $this->roomCount($profile->rows, $profile->cols);
+        if (in_array(CaseCondition::EveryRoom, $profile->conditions, true)) {
+            // Every room is occupied: about two guests per room, so that the random placement fills all of them.
+            $roomCount = max(2, min($roomCount, (int) ceil(count($characters) / 2)));
+        }
+        $roomNames = $this->texts->roomNames($random, $roomCount);
         $tokens = [];
         $placements = [];
         $rowPositions = array_slice($random->shuffle(range(0, $profile->rows - 1)), 0, count($characters));
@@ -209,6 +214,10 @@ class PuzzleGenerator
         );
         // Conditions of the whole case ride along in the base, so the statements are weakened with them in mind.
         $conditions = new ConditionPlanner($this->texts)->plan($base, $placements, $profile->conditions, $random);
+        // A case promised to carry a condition (a story chapter teaches it) must carry it: a map where it fails is rejected.
+        if (count($conditions) !== count($profile->conditions)) {
+            return null;
+        }
         if ($conditions !== []) {
             $base = new PuzzleDefinition($base->slug, $base->type, $base->grid, $base->rooms, $base->walls, $base->objects, $base->tokens, $conditions, $base->windows);
         }

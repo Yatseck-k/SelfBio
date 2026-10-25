@@ -23,4 +23,11 @@ class StoryTextsTest extends TestCase
 
         $this->assertDoesNotMatchRegularExpression('/ровно (двое|трое|четверо)/u', $source);
     }
+
+    public function test_story_texts_do_not_claim_as_many_guests_as_rows(): void
+    {
+        $source = (string) file_get_contents(dirname(__DIR__, 3).'/config/story.php');
+
+        $this->assertDoesNotMatchRegularExpression('/[Дд]евять гостей|девяти гостей/u', $source);
+    }
 }
