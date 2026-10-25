@@ -114,18 +114,6 @@ class PuzzleGenerator
         $scene = array_shift($uncovered);
         $reserved = array_fill_keys(array_map(fn (Cell $cell) => $cell->key(), [$scene, ...$uncovered]), true);
         $freeCells = $random->shuffle(array_values(array_filter($freeCells, fn (Cell $cell) => !isset($reserved[$cell->key()]))));
-        // Obstacles are named, impassable furniture inside rooms; hatched blocked cells stay a manual/legacy editor feature.
-        $blockedCells = [];
-        $extraObjectCount = min(count($freeCells) - 2, max(3, intdiv($profile->rows * $profile->cols, 14)) - count($uncovered));
-        $extraObjectCount = max(0, $extraObjectCount);
-        $extraObjectCells = [...$uncovered, ...array_slice($freeCells, 0, $extraObjectCount)];
-        $extraObjectCount = count($extraObjectCells);
-        $decorPool = array_slice($freeCells, $extraObjectCount - count($uncovered));
-        // Fill roughly a quarter of the map with furniture so rooms read as lived-in spaces.
-        $decorCount = max(0, min(
-            count($decorPool),
-            (int) round($profile->rows * $profile->cols * 0.27) - count($tokens) - $extraObjectCount,
-        ));
         // Only some figures sit on usable furniture, the rest simply stand in their room; obstacles come from the
         // unusable kinds. Every object is drawn to fit the room it stands in, and names stay unique among
         // clue-bearing objects, so «у предмета X» is unambiguous.
@@ -140,9 +128,55 @@ class PuzzleGenerator
             $pool = array_values(array_filter($this->catalog->usableEntries(), fn (array $entry) => !in_array($entry['name'], $taken, true)));
             $solutionEntries[$index] = $this->pickForRoom($random, $pool, $this->roomAt($rooms, $cell));
         }
+
+        // A guest on a bare cell has little to say about himself, so a piece of furniture of his own room stands right
+        // next to him: «рядом с предметом X» keeps such a case solvable on a big map.
+        $freeKeys = [];
+        foreach ($freeCells as $index => $free) {
+            $freeKeys[$free->key()] = $index;
+        }
+        $anchorCells = [];
+        foreach ($solutionCells as $index => $cell) {
+            if ($solutionEntries[$index] !== null) {
+                continue;
+            }
+            $home = $this->roomAt($rooms, $cell)->code;
+            $near = array_values(array_filter(
+                $this->orthogonalNeighbors($cell, $profile->rows, $profile->cols),
+                fn (Cell $next) => isset($freeKeys[$next->key()]) && !isset($anchorCells[$next->key()]) && $this->roomAt($rooms, $next)->code === $home,
+            ));
+            if ($near !== []) {
+                $picked = $random->pick($near);
+                $anchorCells[$picked->key()] = $picked;
+            }
+        }
+        $freeCells = array_values(array_filter($freeCells, fn (Cell $free) => !isset($anchorCells[$free->key()])));
+
+        // Obstacles are named, impassable furniture inside rooms; hatched blocked cells stay a manual/legacy editor feature.
+        $blockedCells = [];
+        $extraObjectCount = min(count($freeCells) - 2, max(3, intdiv($profile->rows * $profile->cols, 14)) - count($uncovered));
+        $extraObjectCount = max(0, $extraObjectCount);
+        $extraObjectCells = [...$uncovered, ...array_slice($freeCells, 0, $extraObjectCount)];
+        $extraObjectCount = count($extraObjectCells);
+        $decorPool = array_slice($freeCells, $extraObjectCount - count($uncovered));
+        // Fill roughly a quarter of the map with furniture so rooms read as lived-in spaces.
+        $decorCount = max(0, min(
+            count($decorPool),
+            (int) round($profile->rows * $profile->cols * 0.27) - count($tokens) - $extraObjectCount,
+        ));
         $solutionNames = array_column(array_filter($solutionEntries), 'name');
         $decorPoolEntries = array_values(array_filter($this->catalog->allEntries(), fn (array $entry) => !in_array($entry['name'], $solutionNames, true)));
         $objects = [];
+
+        $anchorNames = $solutionNames;
+        foreach (array_values($anchorCells) as $index => $cell) {
+            $pool = array_values(array_filter($this->catalog->allEntries(), fn (array $entry) => !in_array($entry['name'], $anchorNames, true)));
+            $entry = $this->pickForRoom($random, $pool, $this->roomAt($rooms, $cell));
+            $anchorNames[] = $entry['name'];
+            $occupiable = $this->catalog->isOccupiable($entry['kind']) ?? true;
+            $objects[] = new MapObject('anchor-'.($index + 1), $entry['kind'], $entry['name'], $cell, !$occupiable, $occupiable);
+        }
+        $decorPoolEntries = array_values(array_filter($this->catalog->allEntries(), fn (array $entry) => !in_array($entry['name'], $anchorNames, true)));
 
         foreach ($solutionCells as $index => $cell) {
             $entry = $solutionEntries[$index];

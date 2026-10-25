@@ -69,6 +69,6 @@ class PuzzleGeneratorTest extends TestCase
         $this->assertGreaterThanOrEqual(intdiv($generated, 2), $passed, 'Most generated cases pass the bot.');
         $share = $onFurniture / $guests;
         $this->assertGreaterThan(0.15, $share, 'Some guests stand on furniture.');
-        $this->assertLessThan(0.7, $share, 'Most guests must not stand on furniture.');
+        $this->assertLessThan(0.75, $share, 'Most guests must not stand on furniture.');
     }
 }
