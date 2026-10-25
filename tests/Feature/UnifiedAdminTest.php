@@ -125,7 +125,7 @@ class UnifiedAdminTest extends TestCase
         }
         $this->actingAs($this->admin($permissions), 'game_admin');
 
-        foreach (['main', 'puzzles', 'puzzles/generate', 'objects', 'appearance', 'release', 'players', 'orders', 'difficulty', 'skills', 'users', 'roles'] as $path) {
+        foreach (['main', 'puzzles', 'puzzles/generate', 'objects', 'appearance', 'release', 'players', 'orders', 'incidents', 'difficulty', 'skills', 'users', 'roles'] as $path) {
             $this->get('/admin/'.$path)->assertOk();
         }
 

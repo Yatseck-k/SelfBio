@@ -8,6 +8,7 @@ use Orchid\Platform\Dashboard;
 use Orchid\Platform\ItemPermission;
 use Orchid\Platform\OrchidServiceProvider;
 use Orchid\Screen\Actions\Menu;
+use Whodoku\Models\Incident;
 
 class PlatformProvider extends OrchidServiceProvider
 {
@@ -58,6 +59,8 @@ class PlatformProvider extends OrchidServiceProvider
                     Menu::make('Оформление')->icon('bs.palette')->route('platform.appearance')->permission('platform.puzzles.objects'),
                     Menu::make('Выпуск дел')->icon('bs.calendar-event')->route('platform.release')->permission('platform.puzzles.generate'),
                     Menu::make('Игроки')->icon('bs.person-badge')->route('platform.players')->permission('platform.puzzles.players'),
+                    Menu::make('Обращения игроков')->icon('bs.flag')->route('platform.incidents')->permission('platform.puzzles.validate')
+                        ->badge(fn () => ($count = Incident::query()->where('status', Incident::NEW)->count()) > 0 ? (string) $count : null),
                     Menu::make('Заказы')->icon('bs.cart')->route('platform.orders')->permission('platform.puzzles.players'),
                     Menu::make('Оценка сложности')->icon('bs.star-half')->route('platform.difficulty')->permission('platform.puzzles.generate'),
                     Menu::make('Навыки')->icon('bs.stars')->route('platform.skills')->permission('platform.puzzles.players'),

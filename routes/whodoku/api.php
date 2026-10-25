@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Whodoku\Http\Controllers\Api\AppearanceController;
 use Whodoku\Http\Controllers\Api\EndlessController;
+use Whodoku\Http\Controllers\Api\IncidentController;
 use Whodoku\Http\Controllers\Api\LeaderboardController;
 use Whodoku\Http\Controllers\Api\PaymentWebhookController;
 use Whodoku\Http\Controllers\Api\PuzzleCheckController;
@@ -26,6 +27,7 @@ Route::middleware('web')->group(function (): void {
     Route::get('/puzzles/{publishedPuzzle}', [PuzzleController::class, 'show']);
     Route::post('/puzzles/{publishedPuzzle}/check', PuzzleCheckController::class)->middleware('throttle:puzzle-check');
     Route::post('/puzzles/{publishedPuzzle}/hint', PuzzleHintController::class)->middleware('throttle:puzzle-hint');
+    Route::post('/puzzles/{publishedPuzzle}/incidents', [IncidentController::class, 'store'])->middleware('throttle:incident-report');
     Route::get('/leaderboard', LeaderboardController::class);
     Route::get('/story', StoryController::class);
     Route::post('/endless/next', [EndlessController::class, 'next'])->middleware('throttle:endless-next');

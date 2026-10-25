@@ -1853,6 +1853,16 @@ h2, h3 { font-family: var(--font-display); }
 .shop-dialog .shop-error { color: var(--case-danger, #8e2b2b); font-weight: 600; }
 .shop-dialog .shop-alpha { padding: 0.5rem 0.7rem; border-left: 4px solid #b29a63; background: rgb(178 154 99 / 0.15); text-align: left; }
 .shop-dialog .shop-note { margin: 0.6rem 0; }
+
+.report-link { display: block; margin: 0.6rem 0 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; font-size: 0.9rem; text-decoration: underline; opacity: 0.75; cursor: pointer; }
+.report-link:hover, .report-link:focus-visible { opacity: 1; }
+.report-dialog form { text-align: left; }
+.report-dialog .report-categories { display: grid; gap: 0.4rem; margin: 0 0 0.8rem; padding: 0; border: 0; }
+.report-dialog .report-categories legend { margin-bottom: 0.4rem; font-weight: 600; }
+.report-dialog .report-categories label { display: flex; gap: 0.5rem; align-items: center; }
+.report-dialog .report-message { display: grid; gap: 0.3rem; }
+.report-dialog textarea { width: 100%; padding: 0.5rem; border: 1px solid #b29a63; border-radius: 0.5rem; background: #fff; color: inherit; font: inherit; resize: vertical; }
+.report-dialog .report-thanks { margin: 1rem 0; font-weight: 600; }
 .shop-card { text-align: left; }
 .shop-card .shop-alpha { padding: 0.5rem 0.7rem; border-left: 4px solid #b29a63; background: rgb(178 154 99 / 0.15); }
 .shop-card .primary-action { margin: 0.4rem 0; }

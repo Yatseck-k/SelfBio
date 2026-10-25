@@ -1405,6 +1405,22 @@
     background: rgb(106 96 73 / 15%);
 }
 
+:root[data-theme='dark'] .report-link {
+    border: 0;
+    background: none;
+    color: inherit;
+}
+
+:root[data-theme='dark'] .report-dialog .report-categories {
+    border: 0;
+}
+
+:root[data-theme='dark'] .report-dialog textarea {
+    border: 1px solid #82775d;
+    background: #1a1a1a;
+    color: inherit;
+}
+
 :root[data-theme='dark'] .shop-card .shop-alpha {
     border-left: 4px solid #82775d;
     background: rgb(106 96 73 / 15%);

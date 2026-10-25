@@ -19,6 +19,7 @@ import { useNotebook } from '../composables/notebook';
 import { poseText } from '../composables/pose';
 import { coveredCells, findEmptyCell } from '../composables/coverage';
 import BuyHintsDialog from '../Components/BuyHintsDialog.vue';
+import ReportProblemDialog from '../Components/ReportProblemDialog.vue';
 import { apiHeaders, loadPlayer, playerState } from '../composables/usePlayer';
 import { usePuzzleProgress } from '../composables/usePuzzleProgress';
 import type { Cell, ChapterOutro, ClueTarget, Ending, HintBalance, PuzzleDetail, SolveReward } from '../types/puzzle';
@@ -35,6 +36,7 @@ const message = ref('');
 const checking = ref(false);
 const requestingHint = ref(false);
 const buying = ref(false);
+const reporting = ref(false);
 const MAX_HINTS = 3;
 const { progress, load: loadProgress, save } = usePuzzleProgress();
 const reward = ref<SolveReward | null>(null);
@@ -360,6 +362,7 @@ onMounted(loadPuzzle);
                             <button class="primary-action" type="button" :disabled="checking" @click="check">{{ checking ? 'Проверяем…' : 'Проверить решение' }}</button>
                         </div>
                         <p v-if="message" class="game-message" role="status">{{ message }}</p>
+                        <button class="report-link" type="button" @click="reporting = true">Сообщить об ошибке</button>
                     </div>
                     <NotebookPanel class="controls-notebook" :notes-open="abilities.notes" :helper-open="abilities.helper" :mark-open="abilities.markCandidates" :place-open="abilities.autoplace" :can-place="singleCell !== null" :signed-in="playerState.player !== null" :helper-on="helperOn" :helper-note="helperNote" :can-mark="candidateKeys !== null" :can-clear="selectedToken !== null" @toggle-helper="toggleHelper" @mark-candidates="markCandidates" @clear-notes="clearNotes" @place-single="placeSingle" />
                 </section>
@@ -368,6 +371,7 @@ onMounted(loadPuzzle);
             <p v-if="endless.error" class="login-error" role="alert">{{ endless.error }}</p>
             <AchievementDialog :reward="reward" />
             <BuyHintsDialog v-model="buying" />
+            <ReportProblemDialog v-model="reporting" :slug="puzzle.slug" :placements="progress.placements" />
         </template>
     </main>
 </template>

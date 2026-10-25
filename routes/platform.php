@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 use Whodoku\Orchid\Screens\Appearance\AppearanceScreen;
 use Whodoku\Orchid\Screens\Catalog\ObjectCatalogScreen;
+use Whodoku\Orchid\Screens\Incident\IncidentListScreen;
 use Whodoku\Orchid\Screens\PlatformScreen;
 use Whodoku\Orchid\Screens\Player\PlayerListScreen;
 use Whodoku\Orchid\Screens\Puzzle\DifficultyReviewScreen;
@@ -69,6 +70,13 @@ Route::screen('release', ReleaseScreen::class)
     ->breadcrumbs(fn (Trail $trail) => $trail
         ->parent('platform.index')
         ->push('Выпуск дел', route('platform.release')));
+
+// Platform > Incidents (reports of players)
+Route::screen('incidents', IncidentListScreen::class)
+    ->name('platform.incidents')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Обращения игроков', route('platform.incidents')));
 
 // Platform > Orders
 Route::screen('orders', OrderListScreen::class)

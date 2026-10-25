@@ -37,6 +37,10 @@ class AppServiceProvider extends ServiceProvider
     {
         RateLimiter::for('puzzle-check', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
         RateLimiter::for('puzzle-hint', fn (Request $request) => Limit::perMinute(10)->by($request->user('player')->id ?? $request->ip()));
+        RateLimiter::for('incident-report', fn (Request $request) => [
+            Limit::perMinute(3)->by($request->user('player')->id ?? $request->ip()),
+            Limit::perDay(30)->by($request->user('player')->id ?? $request->ip()),
+        ]);
         RateLimiter::for('endless-next', fn (Request $request) => Limit::perMinute(20)->by($request->user('player')->id ?? $request->ip()));
         RateLimiter::for('shop-order', fn (Request $request) => Limit::perMinute(6)->by($request->user('player')->id ?? $request->ip()));
         RateLimiter::for('shop-status', fn (Request $request) => Limit::perMinute(40)->by($request->user('player')->id ?? $request->ip()));
