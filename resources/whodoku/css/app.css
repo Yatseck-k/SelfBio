@@ -1291,12 +1291,12 @@ button:disabled {
     pointer-events: none;
 }
 
-.map-window.is-north, .map-window.is-south { right: 16%; left: 16%; height: 6px; }
-.map-window.is-west, .map-window.is-east { top: 16%; bottom: 16%; width: 6px; }
-.map-window.is-north { top: -3px; }
-.map-window.is-south { bottom: -3px; }
-.map-window.is-west { left: -3px; }
-.map-window.is-east { right: -3px; }
+.map-window.is-north, .map-window.is-south { right: 10%; left: 10%; height: 9px; }
+.map-window.is-west, .map-window.is-east { top: 10%; bottom: 10%; width: 9px; }
+.map-window.is-north { top: -4px; }
+.map-window.is-south { bottom: -4px; }
+.map-window.is-west { left: -4px; }
+.map-window.is-east { right: -4px; }
 
 .map-window-legend {
     display: inline-block;

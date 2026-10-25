@@ -44,11 +44,11 @@ class StatementPlanner
             $options[$index] = $this->options($base, $state, $token, $names, $index);
         }
 
-        // Start from the always-unique set (everybody stands «on an object») and weaken random guests'
+        // Start from the always-unique set (everybody stands «on an object», or the strongest statement left for a guest on a bare cell) and weaken random guests'
         // statements while the solver still finds exactly one placement.
         $chosen = [];
         foreach ($options as $index => $byLevel) {
-            $chosen[$index] = $random->pick($byLevel[ClueStrength::EXACT] ?? $this->weakest($byLevel));
+            $chosen[$index] = $random->pick($byLevel[ClueStrength::EXACT] ?? $this->strongest($byLevel));
         }
 
         foreach ($random->shuffle(array_keys($chosen)) as $index) {
@@ -75,9 +75,9 @@ class StatementPlanner
      * @param  array<int, list<Clue>>  $byLevel
      * @return list<Clue>
      */
-    private function weakest(array $byLevel): array
+    private function strongest(array $byLevel): array
     {
-        ksort($byLevel);
+        krsort($byLevel);
 
         return array_first($byLevel) ?? [];
     }
@@ -122,10 +122,16 @@ class StatementPlanner
 
         foreach ($base->windowCells() as $near) {
             if ($near->equals($cell)) {
-                // Windows are few, so their statements are listed several times to be picked more often.
+                // Windows are few, so their statements are listed several times to be picked more often. A statement
+                // is only used when the player can tell which window it means: the only window of the map, or the
+                // only one in the named room.
                 for ($copy = 0; $copy < 3; $copy++) {
-                    $candidates[] = new Clue($this->texts->windowStatement($token, null, $own), ClueType::TokenNearWindow, ['token' => $token->code]);
-                    $candidates[] = new Clue($this->texts->windowStatement($token, $room, $own), ClueType::TokenNearWindow, ['token' => $token->code, 'room' => $room->code]);
+                    if (count($base->windowsNear()) === 1) {
+                        $candidates[] = new Clue($this->texts->windowStatement($token, null, $own), ClueType::TokenNearWindow, ['token' => $token->code]);
+                    }
+                    if (count($base->windowsNear($room->code)) === 1) {
+                        $candidates[] = new Clue($this->texts->windowStatement($token, $room, $own), ClueType::TokenNearWindow, ['token' => $token->code, 'room' => $room->code]);
+                    }
                 }
             }
         }

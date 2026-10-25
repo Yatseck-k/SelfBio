@@ -47,6 +47,20 @@ readonly class PuzzleDefinition
         return array_values($cells);
     }
 
+    /**
+     * The windows a «возле окна» statement can mean: all of them, or those touching a cell of the named room.
+     * A statement is clear to the player only when exactly one window fits.
+     *
+     * @return list<Window>
+     */
+    public function windowsNear(?string $roomCode = null): array
+    {
+        return array_values(array_filter($this->windows, function (Window $window) use ($roomCode): bool {
+            return $roomCode === null
+                || array_any($window->cells($this->grid), fn (Cell $cell) => $this->roomAt($cell)?->code === $roomCode);
+        }));
+    }
+
     public function roomAt(Cell $cell): ?Room
     {
         foreach ($this->rooms as $room) {

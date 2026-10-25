@@ -6,12 +6,13 @@ namespace Whodoku\Console\Commands;
 
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
+use Whodoku\Application\Puzzle\PublishOptions;
 use Whodoku\Application\Puzzle\PuzzleReviewService;
 use Whodoku\Console\WhodokuCommand as Command;
 use Whodoku\Models\Puzzle;
 
 #[Description('The review bot: solve cases by logic, play them through the public service and report problems')]
-#[Signature('puzzles:review {slug? : Slug of one case} {--all : Review every case} {--record : Write the reports to the audit log}')]
+#[Signature('puzzles:review {slug? : Slug of one case} {--all : Review every case} {--record : Write the reports to the audit log} {--unpublish : Take a failed published case back to draft (story chapters are only reported)}')]
 class ReviewPuzzles extends Command
 {
     public function handle(PuzzleReviewService $service): int
@@ -40,6 +41,10 @@ class ReviewPuzzles extends Command
             }
             foreach ($report->warnings() as $check) {
                 $this->line("    ! {$check->title}".($check->message !== '' ? ": {$check->message}" : ''));
+            }
+            if (!$report->passed() && $this->option('unpublish') && $puzzle->status === 'published' && $puzzle->collection !== PublishOptions::COLLECTION_STORY) {
+                $puzzle->forceFill(['status' => 'draft'])->save();
+                $this->line('    → снято с публикации (draft)');
             }
             $failed += $report->passed() ? 0 : 1;
         }

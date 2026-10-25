@@ -7,6 +7,7 @@ namespace Whodoku\Providers;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Whodoku\Console\Commands\BuildStory;
+use Whodoku\Console\Commands\ClarifyWindowStatements;
 use Whodoku\Console\Commands\RatePuzzles;
 use Whodoku\Console\Commands\ReleaseCases;
 use Whodoku\Console\Commands\ReviewPuzzles;
@@ -28,6 +29,7 @@ class WhodokuServiceProvider extends ServiceProvider
                 RatePuzzles::class,
                 ReleaseCases::class,
                 ReviewPuzzles::class,
+                ClarifyWindowStatements::class,
                 TelegramCheck::class,
                 TelegramPoll::class,
             ]);

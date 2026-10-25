@@ -6,6 +6,7 @@ namespace Whodoku\Domain\Puzzle\Review;
 
 use Throwable;
 use Whodoku\Domain\Puzzle\Cell;
+use Whodoku\Domain\Puzzle\Enums\ClueType;
 use Whodoku\Domain\Puzzle\Generation\CrimePlanner;
 use Whodoku\Domain\Puzzle\Generation\Gender;
 use Whodoku\Domain\Puzzle\Placement;
@@ -119,6 +120,21 @@ class PuzzleReviewer
             }
         }
         $checks[] = new ReviewCheck('named_things', 'Названные предметы и комнаты есть на карте и различимы', $problems === [], implode('; ', array_unique($problems)));
+
+        // «Возле окна» must mean one window: the only one of the map, or the only one touching the named room.
+        $vague = [];
+        foreach ($definition->clues as $clue) {
+            if ($clue->type === ClueType::TokenNearWindow) {
+                $room = isset($clue->parameters['room']) ? (string) $clue->parameters['room'] : null;
+                if (count($definition->windowsNear($room)) !== 1) {
+                    $vague[] = $definition->tokenByCode((string) ($clue->parameters['token'] ?? ''))?->name ?? '?';
+                }
+            }
+        }
+        $checks[] = new ReviewCheck(
+            'window_clear', 'Показание про окно указывает на одно окно', $vague === [],
+            $vague === [] ? '' : 'Неясно, какое окно имеет в виду: '.implode(', ', $vague),
+        );
 
         $texts = array_map(fn ($clue) => $clue->text, $definition->clues);
         $checks[] = new ReviewCheck('no_duplicate_statements', 'Показания не повторяются', count($texts) === count(array_unique($texts)));

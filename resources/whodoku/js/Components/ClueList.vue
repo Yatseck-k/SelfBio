@@ -70,7 +70,7 @@ function targetOf(index: number): ClueTarget | null {
             <h2 id="clues-heading">Показания</h2>
             <span class="clue-progress">{{ usedCount }} из {{ statementCount }}</span>
         </div>
-        <p v-if="locate" class="clue-note">Наведите на показание или нажмите «На карте» — названный предмет или комната подсветятся.</p>
+        <p v-if="locate" class="clue-note">Наведите на показание или нажмите «На карте» — названный предмет, комната или окно подсветятся. «Возле окна» — любая из двух клеток по сторонам окна.</p>
         <article v-if="victim" class="victim-card">
             <PersonAvatar class="clue-portrait" :name="victim.name" :avatar="victim.avatar" />
             <div class="clue-speech">

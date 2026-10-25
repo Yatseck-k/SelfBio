@@ -24,6 +24,9 @@ use Whodoku\Domain\Puzzle\Window;
 
 class PuzzleGenerator
 {
+    /** Share of guests who stand on a piece of furniture; the others stand on a bare cell of their room. */
+    private const int GUEST_ON_FURNITURE_PERCENT = 40;
+
     private readonly ObjectCatalog $catalog;
 
     private readonly CaseTextFactory $texts;
@@ -123,22 +126,30 @@ class PuzzleGenerator
             count($decorPool),
             (int) round($profile->rows * $profile->cols * 0.27) - count($tokens) - $extraObjectCount,
         ));
-        // Figures sit on usable furniture; obstacles come from the unusable kinds. Every object is drawn to fit
-        // the room it stands in, and names stay unique among clue-bearing objects, so «у предмета X» is unambiguous.
+        // Only some figures sit on usable furniture, the rest simply stand in their room; obstacles come from the
+        // unusable kinds. Every object is drawn to fit the room it stands in, and names stay unique among
+        // clue-bearing objects, so «у предмета X» is unambiguous.
         $solutionEntries = [];
-        foreach ($solutionCells as $cell) {
-            $taken = array_column($solutionEntries, 'name');
+        foreach ($solutionCells as $index => $cell) {
+            if ($random->nextInt(100) >= self::GUEST_ON_FURNITURE_PERCENT) {
+                $solutionEntries[$index] = null;
+
+                continue;
+            }
+            $taken = array_column(array_filter($solutionEntries), 'name');
             $pool = array_values(array_filter($this->catalog->usableEntries(), fn (array $entry) => !in_array($entry['name'], $taken, true)));
-            $solutionEntries[] = $this->pickForRoom($random, $pool, $this->roomAt($rooms, $cell));
+            $solutionEntries[$index] = $this->pickForRoom($random, $pool, $this->roomAt($rooms, $cell));
         }
-        $solutionNames = array_column($solutionEntries, 'name');
+        $solutionNames = array_column(array_filter($solutionEntries), 'name');
         $decorPoolEntries = array_values(array_filter($this->catalog->allEntries(), fn (array $entry) => !in_array($entry['name'], $solutionNames, true)));
         $objects = [];
 
         foreach ($solutionCells as $index => $cell) {
             $entry = $solutionEntries[$index];
-            $object = new MapObject("object-$index", $entry['kind'], $entry['name'], $cell, false, true);
-            $objects[] = $object;
+            if ($entry === null) {
+                continue;
+            }
+            $objects[] = new MapObject("object-$index", $entry['kind'], $entry['name'], $cell, false, true);
         }
 
         foreach ($extraObjectCells as $index => $cell) {
