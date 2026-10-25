@@ -23,6 +23,8 @@ use Whodoku\Models\Puzzle;
 #[Signature('puzzles:regenerate {slug? : Slug of one case} {--apply : Replace the cases; without it only a report is printed} {--limit= : Replace at most this many cases} {--share=0.7 : Replace cases where more guests than this share stand on furniture}')]
 class RegeneratePuzzles extends Command
 {
+    private const int TRIES = 3;
+
     public function handle(GeneratedPuzzlePublisher $publisher): int
     {
         $apply = (bool) $this->option('apply');
@@ -49,12 +51,19 @@ class RegeneratePuzzles extends Command
                 continue;
             }
 
-            try {
-                $this->replace($puzzle, $publisher);
-                $done++;
-            } catch (GeneratedPuzzlePublicationException $exception) {
-                $failed++;
-                $this->line("    <error>не удалось создать замену</error> — дело оставлено как есть ({$exception->getMessage()})");
+            // A seed may simply not produce a fitting map (large maps with conditions), so a few seeds are tried.
+            for ($try = 1; $try <= self::TRIES; $try++) {
+                try {
+                    $this->replace($puzzle, $publisher);
+                    $done++;
+
+                    break;
+                } catch (GeneratedPuzzlePublicationException $exception) {
+                    if ($try === self::TRIES) {
+                        $failed++;
+                        $this->line("    <error>не удалось создать замену</error> — дело оставлено как есть ({$exception->getMessage()})");
+                    }
+                }
             }
         }
 

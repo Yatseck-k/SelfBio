@@ -206,6 +206,10 @@ class PuzzleReviewer
         $victim = $meta['victim'] ?? null;
         $story = (string) ($meta['story'] ?? '');
         $checks[] = new ReviewCheck(
+            'victim_no_counts', 'Реплика потерпевшего не называет число людей в комнате',
+            preg_match('/(нас|нам|было|был[аи]?) (двое|трое|четверо)|ровно (двое|трое)/u', mb_strtolower((string) ($victim['statement'] ?? ''))) !== 1,
+        );
+        $checks[] = new ReviewCheck(
             'victim_card', 'У дела есть карточка потерпевшего, история называет его',
             is_array($victim) && ($victim['statement'] ?? '') !== '' && str_contains($story, (string) ($victim['name'] ?? "\0")),
             '', ReviewCheck::WARNING,

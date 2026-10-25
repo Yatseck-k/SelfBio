@@ -7,10 +7,13 @@ namespace Whodoku\Application\Puzzle;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 use Whodoku\Domain\Puzzle\Cell;
+use Whodoku\Domain\Puzzle\Enums\TokenKind;
 use Whodoku\Domain\Puzzle\Placement;
+use Whodoku\Domain\Puzzle\PuzzleDefinition;
 use Whodoku\Domain\Puzzle\Review\PuzzleReviewer;
 use Whodoku\Domain\Puzzle\Review\ReviewCheck;
 use Whodoku\Domain\Puzzle\Review\ReviewReport;
+use Whodoku\Domain\Puzzle\Review\StoryChapterReview;
 use Whodoku\Models\AdminAuditLog;
 use Whodoku\Models\Puzzle;
 use Whodoku\Models\User;
@@ -57,7 +60,22 @@ class PuzzleReviewService
         ]);
 
         // Playing a broken case would only throw, so the player run follows a clean domain review.
+        $report = $report->withChecks($this->storyChecks($puzzle, $definition));
+
         return $report->passed() ? $report->withChecks($this->playerRun($puzzle, $payload)) : $report;
+    }
+
+    /** @return list<ReviewCheck> a story case is also checked against the chapter it belongs to */
+    private function storyChecks(Puzzle $puzzle, PuzzleDefinition $definition): array
+    {
+        $chapter = $puzzle->story_chapter !== null ? config("story.chapters.{$puzzle->story_chapter}") : null;
+        if (!is_array($chapter)) {
+            return [];
+        }
+
+        return (new StoryChapterReview)->review(
+            $chapter, array_map(fn ($clue) => $clue->type, $definition->clues), $puzzle->rows, $puzzle->cols, count(array_filter($definition->tokens, fn ($token) => $token->kind === TokenKind::Character)),
+        );
     }
 
     /** Reviews the case and writes the report to the audit log. */
