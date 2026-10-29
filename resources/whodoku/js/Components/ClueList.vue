@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import PersonAvatar from './PersonAvatar.vue';
-import type { ClueTarget, PuzzleToken, Victim } from '../types/puzzle';
+import type { ClueTarget, PlacementMap, PuzzleToken, Victim } from '../types/puzzle';
 
 const props = withDefaults(defineProps<{
     clues: { text: string; sort_order: number; constraint_type?: string; constraint?: Record<string, unknown> }[];
     usedClues: number[];
     tokens?: PuzzleToken[];
     victim?: Victim | null;
+    /** The selected guest and placements make a mobile statement card double as the guest picker. */
+    selectedToken?: string | null;
+    placements?: PlacementMap;
+    candidateCounts?: Record<string, number> | null;
+    poses?: Record<string, string>;
     /** The statement whose objects are pinned on the map. */
     pinned?: number | null;
     /** A statement may light up what it names on the map: a strong hint, so it is an ability, off by default in the game. */
@@ -36,6 +41,7 @@ const emit = defineEmits<{
     toggle: [index: number];
     preview: [target: ClueTarget | null];
     pin: [index: number];
+    select: [code: string];
 }>();
 
 /** The guest who gives the statement, found by the token code of its constraint. */
@@ -43,6 +49,15 @@ function speakerOf(index: number): PuzzleToken | undefined {
     const code = props.clues[index]?.constraint?.token;
 
     return props.tokens?.find((token) => token.code === code);
+}
+
+function speakerStatus(index: number): string {
+    const speaker = speakerOf(index);
+    if (speaker === undefined) return '';
+    if (props.placements?.[speaker.code]) return props.poses?.[speaker.code] ?? 'На карте';
+    if (props.candidateCounts?.[speaker.code] !== undefined) return `Клеток: ${props.candidateCounts[speaker.code]}`;
+
+    return 'Не размещён';
 }
 
 /** The quoted words of «Имя утверждает: «…»»; the whole text when it has another shape. */
@@ -67,7 +82,7 @@ function targetOf(index: number): ClueTarget | null {
 <template>
     <section class="game-panel clue-panel" aria-labelledby="clues-heading">
         <div class="clue-heading">
-            <h2 id="clues-heading">Показания</h2>
+            <h2 id="clues-heading">Свидетели и показания</h2>
             <span class="clue-progress">{{ usedCount }} из {{ statementCount }}</span>
         </div>
         <p v-if="locate" class="clue-note">Наведите на показание или нажмите «На карте» — названный предмет, комната или окно подсветятся. «Возле окна» — любая из двух клеток по сторонам окна.</p>
@@ -108,10 +123,19 @@ function targetOf(index: number): ClueTarget | null {
                         <span class="clue-speech">
                             <strong>{{ speakerOf(index)!.name }}</strong>
                             <span class="clue-quote">«{{ quoteOf(index) }}»</span>
+                            <small class="clue-speaker-status">{{ speakerStatus(index) }}</small>
                         </span>
                     </template>
                     <span v-else>{{ clue.text }}</span>
                 </label>
+                <button
+                    v-if="speakerOf(index)"
+                    type="button"
+                    class="clue-select"
+                    :class="{ 'is-selected': selectedToken === speakerOf(index)!.code }"
+                    :aria-pressed="selectedToken === speakerOf(index)!.code"
+                    @click="emit('select', speakerOf(index)!.code)"
+                >{{ selectedToken === speakerOf(index)!.code ? 'Выбран' : 'Выбрать' }}</button>
                 <button
                     v-if="locate && targetOf(index) !== null"
                     type="button"

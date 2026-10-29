@@ -1281,6 +1281,8 @@ button:disabled {
     cursor: pointer;
 }
 .clue-locate[aria-pressed='true'] { border-color: #c2410c; background: #ffedd5; }
+.clue-select { display: none; }
+.clue-speaker-status { color: #56625a; font-size: 0.75rem; }
 
 /* Windows stand on the line of a cell side; the cell across the line draws its own half of the bar. */
 .map-window {
@@ -1634,7 +1636,8 @@ h2, h3 { font-family: var(--font-display); }
     .token-copy strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
-/* Witnesses and statements: one row, a swipeable slider on a phone; on wider screens the wrapper is transparent and the blocks sit in the grid areas above. */
+/* Witnesses and statements share one wrapper only on wide screens. On a phone both stay visible in the normal
+   page flow: the player should not have to discover the second panel by swiping sideways. */
 .game-slider { display: contents; }
 
 @media (max-width: 720px) {
@@ -1647,23 +1650,31 @@ h2, h3 { font-family: var(--font-display); }
 
     .game-slider {
         grid-area: panels;
-        display: flex;
+        display: grid;
         gap: 0.75rem;
-        overflow-x: auto;
-        padding-bottom: 0.4rem;
-        overscroll-behavior-x: contain;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
     }
 
-    /* Both panels are the same height and scroll inside; the edge of the next one shows that there is a second. */
+    /* Let each card grow with its contents instead of hiding either panel behind a horizontal slider. */
     .game-slider > * {
-        flex: 0 0 min(88%, 26rem);
         min-width: 0;
-        max-height: 32rem;
-        overflow-y: auto;
-        scroll-snap-align: start;
     }
+
+    /* One witness card contains both the person and their statement; the separate picker would repeat it. */
+    .game-tokens { display: none; }
+    .clue-card label { padding-right: 0; }
+    .clue-select {
+        display: inline-flex;
+        align-items: center;
+        margin: 0.5rem 0 0 1.85rem;
+        padding: 0.2rem 0.65rem;
+        border: 1px solid #c9b8a0;
+        border-radius: 999px;
+        background: #fffdf6;
+        color: #7a3a14;
+        font-size: 0.8rem;
+        cursor: pointer;
+    }
+    .clue-select.is-selected { border-color: #b76a3b; background: #fbf1e6; color: #7a3a14; }
 }
 
 /* Controls: buttons and mode on the left, the notebook on the right. */

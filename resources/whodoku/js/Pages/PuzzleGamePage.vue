@@ -343,7 +343,7 @@ onMounted(loadPuzzle);
                 <PuzzleGrid class="game-map" :puzzle="puzzle" :placements="progress.placements" :notes="abilities.notes ? progress.notes : {}" :selected-token="selectedToken" :scene="scene" :highlight="highlight" :candidates="candidateKeys" :cover="abilities.autoCross" @select-cell="selectCell" />
                 <div class="game-slider" aria-label="Свидетели и показания">
                     <TokenPanel class="game-tokens" :tokens="puzzle.tokens" :placements="progress.placements" :selected-token="selectedToken" :candidate-counts="helperOn ? candidatesByToken : null" :poses="poses" @select="selectToken" />
-                    <ClueList class="game-clues" :clues="puzzle.clues" :used-clues="progress.usedClues" :tokens="puzzle.tokens" :victim="puzzle.victim" :pinned="pinnedClue" :locate="abilities.locateOnMap" @toggle="toggleClue" @preview="previewTarget = $event" @pin="pinClue" />
+                    <ClueList class="game-clues" :clues="puzzle.clues" :used-clues="progress.usedClues" :tokens="puzzle.tokens" :victim="puzzle.victim" :selected-token="selectedToken" :placements="progress.placements" :candidate-counts="helperOn ? candidatesByToken : null" :poses="poses" :pinned="pinnedClue" :locate="abilities.locateOnMap" @select="selectToken" @toggle="toggleClue" @preview="previewTarget = $event" @pin="pinClue" />
                 </div>
                 <section class="game-controls" aria-label="Управление расследованием">
                     <div class="controls-main">
