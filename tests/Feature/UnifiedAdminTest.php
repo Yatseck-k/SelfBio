@@ -137,6 +137,10 @@ class UnifiedAdminTest extends TestCase
         foreach (["puzzles/{$puzzleId}", "puzzles/{$puzzleId}/map", "puzzles/{$puzzleId}/validate"] as $path) {
             $this->get('/admin/'.$path)->assertOk();
         }
+        $this->get("/admin/puzzles/{$puzzleId}/validate")
+            ->assertSee('Полная проверка уровня')
+            ->assertSee('Показания (0)')
+            ->assertSee('Условия дела (0)');
     }
 
     private function admin(array $permissions): User

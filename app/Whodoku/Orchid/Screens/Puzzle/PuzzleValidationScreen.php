@@ -12,6 +12,7 @@ use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
 use Whodoku\Application\Puzzle\PuzzlePublicationValidator;
+use Whodoku\Application\Puzzle\PuzzleReviewService;
 use Whodoku\Models\Puzzle;
 
 class PuzzleValidationScreen extends Screen
@@ -23,11 +24,24 @@ class PuzzleValidationScreen extends Screen
         $this->isDraft = $puzzle->status === 'draft';
         $validation = $puzzle->auditLogs()->where('action', 'validate')->latest('id')->first();
         $solver = $puzzle->auditLogs()->where('action', 'solve')->latest('id')->first();
+        $review = $puzzle->auditLogs()->where('action', 'bot_review')->latest('id')->first();
+        $puzzle->loadMissing('clues');
+        $conditions = $puzzle->clues->filter(fn ($clue) => in_array($clue->constraint_type, ['EVERY_ROOM_HAS_TOKEN', 'ROOM_TOKEN_LIMIT', 'ROOM_TOKEN_COUNT'], true));
 
         return [
             'puzzle' => ['title' => $puzzle->title, 'slug' => $puzzle->slug, 'status' => $puzzle->status],
             'validation' => $validation->validation_result ?? [],
             'solverStatus' => $solver->solver_result['status'] ?? 'not_run',
+            'botReview' => $review?->validation_result ?? [],
+            'statements' => $puzzle->clues->diff($conditions)->sortBy('sort_order')->map(fn ($clue) => [
+                'order' => $clue->sort_order + 1,
+                'text' => $clue->text,
+                'type' => $clue->constraint_type,
+            ])->values()->all(),
+            'conditions' => $conditions->sortBy('sort_order')->map(fn ($clue) => [
+                'text' => $clue->text,
+                'type' => $clue->constraint_type,
+            ])->values()->all(),
         ];
     }
 
@@ -50,7 +64,8 @@ class PuzzleValidationScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make('Запустить проверку')->icon('bs.check2-circle')->method('runValidation'),
+            Button::make('Проверить перед публикацией')->icon('bs.check2-circle')->method('runValidation'),
+            Button::make('Полная проверка уровня')->icon('bs.robot')->method('runBotReview'),
             Button::make('Опубликовать')->icon('bs.upload')->method('publish')
                 ->canSee($this->isDraft && (request()->user()?->hasAccess('platform.puzzles.publish') ?? false)),
         ];
@@ -77,6 +92,16 @@ class PuzzleValidationScreen extends Screen
         } else {
             Toast::error('Дело не опубликовано. Проверьте результаты и убедитесь, что оно осталось черновиком.');
         }
+
+        return to_route('platform.puzzles.validate', $puzzle);
+    }
+
+    public function runBotReview(Puzzle $puzzle, Request $request, PuzzleReviewService $review): RedirectResponse
+    {
+        $report = $review->reviewAndRecord($puzzle, $request->user(), ['validation_screen' => true]);
+        $report->passed()
+            ? Toast::success('Уровень прошёл полную проверку: карта, показания, условия и решение согласованы.')
+            : Toast::error('Бот нашёл ошибки: '.implode('; ', array_map(fn ($check) => $check->title, $report->failures())));
 
         return to_route('platform.puzzles.validate', $puzzle);
     }
