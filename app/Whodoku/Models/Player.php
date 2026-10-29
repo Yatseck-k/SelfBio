@@ -17,7 +17,7 @@ use Orchid\Screen\AsSource;
  */
 #[Fillable([
     'telegram_id', 'telegram_username', 'first_name', 'photo_url', 'detective_name', 'detective_key', 'avatar',
-    'points', 'skills', 'skills_reset_at', 'skills_reset_level', 'banned_at', 'last_seen_at',
+    'points', 'skills', 'skills_reset_at', 'skills_reset_level', 'hidden_from_leaderboard', 'banned_at', 'last_seen_at',
 ])]
 #[Hidden(['remember_token'])]
 class Player extends Authenticatable
@@ -53,6 +53,7 @@ class Player extends Authenticatable
             'skills' => 'array',
             'skills_reset_at' => 'datetime',
             'skills_reset_level' => 'integer',
+            'hidden_from_leaderboard' => 'boolean',
             'banned_at' => 'datetime',
             'last_seen_at' => 'datetime',
         ];

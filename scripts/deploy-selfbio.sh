@@ -124,7 +124,10 @@ if [ -n "$APP_SVC" ]; then
 
     echo "==> Режим обслуживания"
     # Если скрипт упадёт дальше, сайт останется в нём: после исправления — make up / php artisan up.
-    docker compose exec -T -u 1000 "$APP_SVC" php artisan down --retry=15 || true
+    # The maintenance page is copied before the rest of the release, so it is available even on this first update.
+    mkdir -p "$DIR/resources/views/maintenance"
+    cp "$STAGE/resources/views/maintenance/game-update.blade.php" "$DIR/resources/views/maintenance/game-update.blade.php"
+    docker compose exec -T -u 1000 "$APP_SVC" php artisan down --render=maintenance.game-update --retry=15 || true
 fi
 
 # Бот входа читает код с диска: пока меняется код, он не должен перезапускаться с половиной файлов.

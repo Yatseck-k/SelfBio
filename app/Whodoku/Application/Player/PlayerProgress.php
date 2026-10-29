@@ -205,7 +205,7 @@ class PlayerProgress
             : null;
 
         $chapters = new StoryService($this)->chapterCounts();
-        $rows = Player::query()->whereNotNull('detective_name')->whereNull('banned_at')->get()
+        $rows = Player::query()->whereNotNull('detective_name')->whereNull('banned_at')->where('hidden_from_leaderboard', false)->get()
             ->map(fn (Player $player) => [
                 'id' => $player->id,
                 'name' => $player->detective_name,
