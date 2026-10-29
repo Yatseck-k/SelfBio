@@ -134,6 +134,13 @@ class PuzzleGenerator
             $solutionEntries[$index] = $this->pickForRoom($random, $pool, $this->roomAt($rooms, $cell));
         }
 
+        // A case is a floor plan, not a row of seated portraits: every generated level has at least one guest
+        // standing on an empty cell. This also guarantees a varied mix when a particular seed happens to pick
+        // furniture for every guest.
+        if (array_all($solutionEntries, fn (?array $entry) => $entry !== null)) {
+            $solutionEntries[$random->pick(array_keys($solutionEntries))] = null;
+        }
+
         // A guest on a bare cell has little to say about himself, so a piece of furniture of his own room stands right
         // next to him: «рядом с предметом X» keeps such a case solvable on a big map.
         $freeKeys = [];
@@ -233,6 +240,13 @@ class PuzzleGenerator
             new StatementPlanner($this->texts, $this->solverLimits)->plan($base, $placements, $random),
             $base->windows,
         );
+
+        // A condition must narrow the solution space, not merely repeat a fact about the author's placement.
+        // Statements are weakened in the presence of conditions; reject a variant unless removing each of them
+        // makes the placement ambiguous.
+        if (! $this->conditionsMatter($definition)) {
+            return null;
+        }
 
         $victim = (new VictimFactory)->create($plan, $random);
         $title = $this->crimeTexts->title($type, $random);
@@ -445,7 +459,6 @@ class PuzzleGenerator
         }
 
         $boundary = [];
-        $inner = [];
         foreach ($this->allCells($rows, $cols) as $cell) {
             foreach ([[1, 0], [0, 1]] as [$rowOffset, $colOffset]) {
                 $next = new Cell($cell->row + $rowOffset, $cell->col + $colOffset);
@@ -456,15 +469,12 @@ class PuzzleGenerator
                 $wall = new Wall($cell, $next);
                 if ($roomOf[$cell->key()] !== $roomOf[$next->key()]) {
                     $boundary[] = $wall;
-                } else {
-                    $inner[] = $wall;
                 }
             }
         }
 
-        // Walls prefer room borders, like doors and partitions on a floor plan, and
-        // are spread over different rows and columns before any repeat a line.
-        $candidates = array_merge($random->shuffle($boundary), $random->shuffle($inner));
+        // Walls mark only room boundaries. An internal line reads as a door through the middle of a room.
+        $candidates = $random->shuffle($boundary);
         $count = min(count($candidates), max(3, intdiv($rows * $cols, 12)));
         $picked = [];
         $usedRows = [];
@@ -490,6 +500,32 @@ class PuzzleGenerator
         ksort($picked);
 
         return array_values($picked);
+    }
+
+    /** Every case-wide condition must be needed for the final set of statements to have one solution. */
+    private function conditionsMatter(PuzzleDefinition $definition): bool
+    {
+        $conditions = array_keys(array_filter($definition->clues, fn (Clue $clue) => $clue->type->isCondition()));
+
+        foreach ($conditions as $index) {
+            $without = new PuzzleDefinition(
+                $definition->slug,
+                $definition->type,
+                $definition->grid,
+                $definition->rooms,
+                $definition->walls,
+                $definition->objects,
+                $definition->tokens,
+                array_values(array_filter($definition->clues, fn (Clue $clue, int $clueIndex) => $clueIndex !== $index, ARRAY_FILTER_USE_BOTH)),
+                $definition->windows,
+            );
+
+            if ((new PuzzleSolver)->solve($without, $this->solverLimits)->status !== SolverResult::MULTIPLE) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /** @param list<Placement> $first
